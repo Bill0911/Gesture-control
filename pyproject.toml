@@ -3,7 +3,7 @@ name = "gesture-control"
 version = "0.1.0"
 description = ""
 authors = ["Nguyendo1234 <do.do@student.nhlstenden.com>"]
-readme = "README.md"
+readme = "Readme.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -12,6 +12,7 @@ pyautogui = "^0.9.54"
 comtypes = "^1.4.2"
 pycaw = "^20240210"
 screen-brightness-control = "^0.23.0"
+mediapipe = "^0.10.14"
 
 
 [build-system]
