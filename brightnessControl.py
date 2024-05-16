@@ -1,11 +1,10 @@
-# Importing Libraries 
 import cv2 
 import mediapipe as mp 
 from math import hypot 
 import screen_brightness_control as sbc 
 import numpy as np 
 
-# Initializing the Model 
+# creating the hand recognizer model 
 mpHands = mp.solutions.hands 
 hands = mpHands.Hands( 
 	static_image_mode=False, 
@@ -16,46 +15,46 @@ hands = mpHands.Hands(
 
 Draw = mp.solutions.drawing_utils 
 
-# Start capturing video from webcam 
+# Starting webcam to capture 
 cap = cv2.VideoCapture(0) 
 
 while True: 
-	# Read video frame by frame 
+	# Read video frame 
 	_, frame = cap.read() 
 
 	# Flip image 
 	frame = cv2.flip(frame, 1) 
 
-	# Convert BGR image to RGB image 
+	# Convert BGR image to red-green-blue image (OpenCV) 
 	frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
 
-	# Process the RGB image 
+	# Processing red-green-blue image 
 	Process = hands.process(frameRGB) 
 
 	landmarkList = [] 
-	# if hands are present in image(frame) 
+	# if hands are present in image(by frame) 
 	if Process.multi_hand_landmarks: 
-		# detect handmarks 
+		# recognize handmarks 
 		for handlm in Process.multi_hand_landmarks: 
 			for _id, landmarks in enumerate(handlm.landmark): 
 				# store height and width of image 
 				height, width, color_channels = frame.shape 
 
-				# calculate and append x, y coordinates 
+				# calculate & append x, y coordinates 
 				# of handmarks from image(frame) to lmList 
 				x, y = int(landmarks.x*width), int(landmarks.y*height) 
 				landmarkList.append([_id, x, y]) 
 
-			# draw Landmarks 
+			# draw landmarks 
 			Draw.draw_landmarks(frame, handlm, 
 								mpHands.HAND_CONNECTIONS) 
 
-	# If landmarks list is not empty 
+	# If landmarks list !empty() 
 	if landmarkList != []: 
-		# store x,y coordinates of (tip of) thumb 
+		# store x,y coordinates of tip of thumb 
 		x_1, y_1 = landmarkList[4][1], landmarkList[4][2] 
 
-		# store x,y coordinates of (tip of) index finger 
+		# store x,y coordinates of tip of index finger 
 		x_2, y_2 = landmarkList[8][1], landmarkList[8][2] 
 
 		# draw circle on thumb and index finger tip 
@@ -75,11 +74,10 @@ while True:
 		# range 0 - 100), evaluated at length. 
 		b_level = np.interp(L, [15, 220], [0, 100]) 
 
-		# set brightness 
+		# set up brightness 
 		sbc.set_brightness(int(b_level)) 
 
-	# Display Video and when 'q' is entered, destroy 
-	# the window 
+	#If the user wants to turn off the webcam, press 'q'
 	cv2.imshow('Image', frame) 
 	if cv2.waitKey(1) & 0xff == ord('q'): 
 		break
