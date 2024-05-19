@@ -2,10 +2,11 @@ import cv2
 import mediapipe as mp 
 from math import hypot 
 import screen_brightness_control as sbc 
-import numpy as np 
+import numpy as np
+import pyautogui
 
 # creating the hand recognizer model 
-mpHands = mp.solutions.hands 
+mpHands = mp.solutions.hands
 hands = mpHands.Hands( 
 	static_image_mode=False, 
 	model_complexity=1, 
@@ -29,7 +30,8 @@ while True:
 	frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
 
 	# Processing red-green-blue image 
-	Process = hands.process(frameRGB) 
+	Process = hands.process(frameRGB)
+
 
 	landmarkList = [] 
 	# if hands are present in image(by frame) 
