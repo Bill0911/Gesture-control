@@ -27,30 +27,52 @@ while True:
     # Process the image and get the hand landmarks
     results = hands.process(image)
 
-    # Check if any hand is detected
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
+    #Check if any hand is detected
+    #if results.multi_hand_landmarks:
+        #for hand_landmarks in results.multi_hand_landmarks:
             # Draw hand landmarks
-            mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+           #mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
             # Get the landmarks for the index finger tip and PIP
-            index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
-            index_pip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP]
+            #index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+            #index_pip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP]
 
             # Check if the index finger is raised and at least 0.5 seconds have passed since the last tab switch
-            if index_pip.y - index_tip.y > 0.1 and time.time() - last_switch > 0.5:
-                print("Switching tabs")  # Debugging line
+            #if index_pip.y - index_tip.y > 0.1 and time.time() - last_switch > 0.5:
+                #print("Switching tabs")  # Debugging line
                 # Press down 'ctrl'
-                pyautogui.keyDown('ctrl')
+                #pyautogui.keyDown('ctrl')
                 # Press 'tab'
-                pyautogui.press('tab')
+                #pyautogui.press('tab')
                 # Release 'ctrl'
-                pyautogui.keyUp('ctrl')
+                #pyautogui.keyUp('ctrl')
                 # Update the time of the last tab switch
-                last_switch = time.time()
-            else: #Test if the switching tabs feature is stable or not 
-                print("Not switching tabs")  # Debugging line
-                print(f"index_tip.y: {index_tip.y}, index_pip.y: {index_pip.y}, time since last switch: {time.time() - last_switch}")
+                #last_switch = time.time()
+            
+            # Check if any hand is detected
+    if results.multi_hand_landmarks:
+      for hand_landmarks in results.multi_hand_landmarks:
+        # Draw hand landmarks
+        mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+        # Get the landmarks for the index finger tip and PIP
+        index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+        index_pip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP]
+
+        # Check if the index finger is close to the screen and at least 0.5 seconds have passed since the last tab switch
+        if index_tip.z < -0.105 and time.time() - last_switch > 0.5:  # Adjust the z-coordinate -0.105
+            print("Switching tabs")  # Debugging line
+            # Press down 'ctrl'
+            pyautogui.keyDown('ctrl')
+            # Press 'tab'
+            pyautogui.press('tab')
+            # Release 'ctrl'
+            pyautogui.keyUp('ctrl')
+            # Update the time of the last tab switch
+            last_switch = time.time()
+        else: #Test if the switching tabs feature is stable or not 
+            print("Not switching tabs")  # Debugging line
+            print(f"index_tip.y: {index_tip.z}, index_pip.y: {index_pip.z}, time since last switch: {time.time() - last_switch}")
 
     # Show the image
     cv2.imshow('Image', frame)
