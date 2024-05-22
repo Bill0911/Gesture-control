@@ -31,6 +31,9 @@ last_index_y = None
 #Initialize variables
 last_brightness_time = None
 brightness_adjustment_coolDown = 3
+last_switch = time.time()
+is_adjusting_brightness = False
+is_switching_tabs = False
 
 while True: 
     # Read video frame 
@@ -99,10 +102,13 @@ while True:
         #Scrolling
         if len(landmarkList) >= 21:  # Make sure the index finger tip and middle finger tip are detected
             index_tip = landmarkList[8]
-            middle_tip = landmarkList[12]
             index_pip = landmarkList[6]
             pinky_tip = landmarkList[20]
             pinky_pip = landmarkList[18]
+            ring_tip = landmarkList[16]
+            ring_pip = landmarkList[14]
+            middle_tip = landmarkList[12]
+            middle_pip = landmarkList[10]
 
             if last_index_y is None:
                 last_index_y = index_tip[2]
@@ -110,13 +116,21 @@ while True:
             if time.time() - last_scroll_time > scroll_coolDown:
                 if index_tip[2] < middle_tip[2] and abs(index_tip[2] - last_index_y) > min_scroll_distance:
                     print("Scrolling up")
-                    pyautogui.scroll(90)
+                    pyautogui.scroll(180)
                     last_scroll_time = time.time()
             elif index_tip[2] < pinky_tip[2] and pinky_tip[2] < pinky_pip[2] and abs(index_tip[2] - last_index_y) > min_scroll_distance:
                     print("Scrolling down")
                     pyautogui.scroll(-50)
                     last_scroll_time = time.time()
-
+            elif ring_tip[2] < ring_pip[2] and ring_tip[2] > index_tip[2]:
+                    print("switch tabs")
+                    pyautogui.keyDown('ctrl')
+                    # Press 'tab'
+                    pyautogui.press('tab')
+                    # Release 'ctrl'
+                    pyautogui.keyUp('ctrl')
+                    # Update the time of the last tab switch
+                    last_switch = time.time()
         last_index_y = index_tip[2]
             
     #If the user wants to turn off the webcam, press 'q'
