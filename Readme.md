@@ -1,7 +1,5 @@
-# Gesture Controll
-## Quick setup Installation
-* Create a new folder where you want to store your project
-* Open the terminal and [this link](https://github.com/Bill0911/Gesture-control) then clone in the terminal
-* We need to install poetry (text editor) by typing 
-**pip install poetry** in your terminal (in your project path)
-* After then type **poetry install** in your terminal and done.
+Updated version of Gesture Control
+## The following features are now up-to-date and tested successfully
+* Scroll up-down: use your index finger to scroll up, lower your index finger to scroll down.
+* Switch tab: raise both your index and pinky finger to switch tabs.
+* Turn off webcam: thumb down to turn off your webcam.
