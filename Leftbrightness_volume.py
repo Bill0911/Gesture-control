@@ -1,0 +1,85 @@
+import cv2
+import mediapipe as mp
+from math import hypot
+import screen_brightness_control as sbc
+import numpy as np
+import pyautogui
+
+# Creating the hand recognizer model
+mpHands = mp.solutions.hands
+hands = mpHands.Hands(
+    static_image_mode=False,
+    model_complexity=1,
+    min_detection_confidence=0.75,
+    min_tracking_confidence=0.75,
+    max_num_hands=2
+)
+
+Draw = mp.solutions.drawing_utils
+
+# Starting webcam to capture
+cap = cv2.VideoCapture(0)
+
+def calculate_distance(point1, point2):
+    return hypot(point2[0] - point1[0], point2[1] - point1[1])
+
+while True:
+    # Read video frame
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    # Flip image
+    frame = cv2.flip(frame, 1)
+
+    # Convert BGR image to RGB image
+    frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Processing RGB image
+    process = hands.process(frameRGB)
+
+    landmarkList = []
+    if process.multi_hand_landmarks:
+        for hand_no, handlm in enumerate(process.multi_hand_landmarks):
+            # Identify if the hand is left or right
+            handedness = process.multi_handedness[hand_no].classification[0].label
+            if handedness == "Right":
+                continue
+
+            for _id, lm in enumerate(handlm.landmark):
+                h, w, _ = frame.shape
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                landmarkList.append([_id, cx, cy])
+
+            # Draw landmarks
+            Draw.draw_landmarks(frame, handlm, mpHands.HAND_CONNECTIONS)
+
+            if landmarkList:
+                # Get coordinates for thumb, index, and middle fingers
+                thumb_tip = landmarkList[4][1:]
+                index_tip = landmarkList[8][1:]
+                middle_tip = landmarkList[12][1:]
+
+                # Calculate distances
+                brightness_distance = calculate_distance(thumb_tip, index_tip)
+                volume_distance = calculate_distance(thumb_tip, middle_tip)
+
+                # Adjust brightness
+                brightness_level = np.interp(brightness_distance, [15, 220], [0, 100])
+                sbc.set_brightness(int(brightness_level))
+
+                # Adjust volume
+                volume_level = np.interp(volume_distance, [15, 220], [0, 100])
+                if volume_level < 50:
+                    pyautogui.press("volumeup")
+                else:
+                    pyautogui.press("volumedown")
+
+    # Display the image
+    cv2.imshow('Image', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
