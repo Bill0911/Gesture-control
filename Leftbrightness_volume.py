@@ -60,20 +60,22 @@ while True:
                 thumb_tip = landmarkList[4][1:]
                 index_tip = landmarkList[8][1:]
                 middle_tip = landmarkList[12][1:]
+                ring_tip = landmarkList[16][1:]
+                pinky_tip = landmarkList[20][1:]
 
                 # Calculate distances
-                brightness_distance = calculate_distance(thumb_tip, index_tip)
-                volume_distance = calculate_distance(thumb_tip, middle_tip)
+                volumeup_distance= calculate_distance(thumb_tip, index_tip)
+                volumedown_distance = calculate_distance(thumb_tip, middle_tip)
 
-                # Adjust brightness
-                brightness_level = np.interp(brightness_distance, [15, 220], [0, 100])
-                sbc.set_brightness(int(brightness_level))
+                brightnessup_distance= calculate_distance(thumb_tip, ring_tip)
+                brightnessdown_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # Adjust volume
-                volume_level = np.interp(volume_distance, [15, 220], [0, 100])
-                if volume_level < 50:
+                volumeup_level = np.interp(volumeup_distance, [15, 220], [0, 100])
+                if volumeup_level < 10:
                     pyautogui.press("volumeup")
-                else:
+                volumedown_level = np.interp(volumedown_distance, [15, 220], [0, 100])
+                if volumedown_level < 10:
                     pyautogui.press("volumedown")
 
     # Display the image
