@@ -1,32 +1,26 @@
 import cv2
-from math import hypot
-import numpy as np
-import screen_brightness_control as sbc
 
 from config import Config
 
 
-def process(cv, frame, process):
-    config = Config()
-
+def proccess(cv, frame, process):
     landmarks = []
 
     build_landmarks(cv, frame, process, landmarks)
 
     if landmarks != []:
         # store x,y coordinates of tip of thumb
-        x_1, y_1 = landmarks[4][1], landmarks[4][2]
+        x_1, y_1 = landmarkList[4][1], landmarkList[4][2]
 
         # store x,y coordinates of tip of index finger
-        x_2, y_2 = landmarks[8][1], landmarks[8][2]
+        x_2, y_2 = landmarkList[8][1], landmarkList[8][2]
 
-        if config.DEBUG:
-            # draw circle on thumb and index finger tip
-            cv2.circle(frame, (x_1, y_1), 7, (0, 255, 0), cv2.FILLED)
-            cv2.circle(frame, (x_2, y_2), 7, (0, 255, 0), cv2.FILLED)
+        # draw circle on thumb and index finger tip
+        cv2.circle(frame, (x_1, y_1), 7, (0, 255, 0), cv2.FILLED)
+        cv2.circle(frame, (x_2, y_2), 7, (0, 255, 0), cv2.FILLED)
 
-            # draw line from tip of thumb to tip of index finger
-            cv2.line(frame, (x_1, y_1), (x_2, y_2), (0, 255, 0), 3)
+        # draw line from tip of thumb to tip of index finger
+        cv2.line(frame, (x_1, y_1), (x_2, y_2), (0, 255, 0), 3)
 
         # calculate square root of the sum of
         # squares of the specified arguments.
@@ -47,11 +41,10 @@ def build_landmarks(cv, frame, process, landmarks):
 
     if process.multi_hand_landmarks:
         for hand_mark in process.multi_hand_landmarks:
-            for i, landmark in enumerate(hand_mark.landmark):
-                height, width, color_channels = frame.shape
+            for i, landmarks in enumerate(hand_mark.landmark):
+                height, width = frame.shape
 
-                x, y = int(landmark.x * width), int(landmark.y * height)
+                x, y = int(landmarks.x * width), int(landmarks.y * height)
                 landmarks.append([i, x, y])
-
             if config.DEBUG:
                 cv.draw.draw_landmarks(frame, hand_mark, cv.mp_hands.HAND_CONNECTIONS)
