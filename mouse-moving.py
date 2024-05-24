@@ -7,7 +7,7 @@ pyautogui.FAILSAFE = False
 
 # Initialize MediaPipe Hands.
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(max_num_hands=1)
+hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7, min_tracking_confidence=0.5)
 mp_drawing = mp.solutions.drawing_utils
 
 # Initialize webcam
@@ -21,7 +21,7 @@ ROI_RIGHT = 0.8  # Right 80% of the frame width
 
 # Smoothing parameters
 prev_x, prev_y = 0, 0
-smooth_factor = 0.2
+smooth_factor = 0.8
 
 def detect_two_fingers_up(hand_landmarks):
     # Check if index and middle fingers are up
@@ -30,9 +30,7 @@ def detect_two_fingers_up(hand_landmarks):
     middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
     middle_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP]
     
-    if index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y:
-        return True
-    return False
+    return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
 
 while cap.isOpened():
     success, image = cap.read()
@@ -91,7 +89,7 @@ while cap.isOpened():
                     # Optionally, display the coordinates on the image
                     cv2.putText(image, f'({int(smooth_x)}, {int(smooth_y)})', (cursor_x, cursor_y - 20),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-
+    
     cv2.imshow('Hand Tracking', image)
 
     # Adjust the key to something else if needed
