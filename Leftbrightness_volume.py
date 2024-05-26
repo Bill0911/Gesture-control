@@ -70,8 +70,8 @@ while True:
                 volumeup_distance = calculate_distance(thumb_tip, index_tip)
                 volumedown_distance = calculate_distance(thumb_tip, middle_tip)
 
-                brightnessup_distance = calculate_distance(thumb_tip, ring_tip)
-                brightnessdown_distance = calculate_distance(thumb_tip, pinky_tip)
+                zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
+                zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # Adjust volume
                 volumeup_level = np.interp(volumeup_distance, [15, 220], [0, 100])
@@ -80,6 +80,13 @@ while True:
                 volumedown_level = np.interp(volumedown_distance, [15, 220], [0, 100])
                 if volumedown_level < 10:
                     pyautogui.press("volumedown")
+
+                zoom_up_level = np.interp(zoom_up_distance, [15, 220], [0, 100])
+                if zoom_up_level < 10:
+                    pyautogui.hotkey("super", "+")
+                zoom_down_level = np.interp(zoom_down_distance, [15, 220], [0, 100])
+                if zoom_down_level < 10:
+                    pyautogui.hotkey("super", "-")
 
     # Display the image
     cv2.imshow("Image", frame)
