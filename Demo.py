@@ -1,4 +1,3 @@
-# Import the required modules
 import cv2
 import mediapipe as mp
 from math import hypot
@@ -6,6 +5,8 @@ import screen_brightness_control as sbc
 import numpy as np
 import pyautogui
 import time
+import tkinter as tk
+from tkinter import messagebox
 
 # Create the hand recognizer model
 mpHands = mp.solutions.hands
@@ -35,6 +36,13 @@ last_brightness_time = None
 
 last_switch = time.time()
 
+def confirm_exit():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    result = messagebox.askquestion("Exit Confirmation", "You still have a chance to be moved on. Are you sure to stop using our lovely software?", icon='warning')
+    root.destroy()  # Destroy the main window
+    return result == 'yes'
+
 while True:
     # Read the video frame
     _, frame = cap.read()
@@ -49,6 +57,7 @@ while True:
     Process = hands.process(frameRGB)
 
     landmarkList = []
+    
     # If hands are detected in the image
     if Process.multi_hand_landmarks:
         # Recognize hand landmarks
@@ -103,8 +112,11 @@ while True:
                 time.sleep(1)
                 last_switch = time.time()
             elif thumb_tip[2] > thumb_base[2] and index_tip[2] < thumb_tip[2] and index_tip[2] < index_pip[2]:
-                print("Turning off webcam")
-                break
+               if confirm_exit(): 
+                  print("Turning off webcam")
+                  break
+               else:
+                  print("Continuing webcam")
             
 
         last_index_y = index_tip[2]
