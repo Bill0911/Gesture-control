@@ -102,7 +102,7 @@ while True:
                 pyautogui.keyUp('ctrl')
                 time.sleep(1)
                 last_switch = time.time()
-            elif thumb_tip[2] > thumb_base[2] and index_tip[2] < thumb_tip[2]:
+            elif thumb_tip[2] > thumb_base[2] and index_tip[2] < thumb_tip[2] and index_tip[2] < index_pip[2]:
                 print("Turning off webcam")
                 break
             
