@@ -30,18 +30,39 @@ last_index_y = None
 last_tab_time = 0
 tab_coolDown = 1.5
 new_tab_opened = False
-
-# Initialize variables for the brightness adjustment feature
-last_brightness_time = None
-
+#=====================
 last_switch = time.time()
+#================CUSTOM NOTIFICATION===============#
+class CustomDialog(tk.Toplevel):
+    def __init__(self, parent):
+        tk.Toplevel.__init__(self, parent)
+        self.title("Are you bored ?")
+        self.configure(bg='DeepSkyBlue4')
+        self.geometry("500x300")
+
+        tk.Label(self, text="This is the sign of being dulled.", bg='DeepSkyBlue4', fg='lavender', font=("Calibri", 15)).place(relx=0.5, rely=0.25, anchor='center')
+        tk.Label(self, text="Are you sure to stop using this lovely control ?", bg='DeepSkyBlue4', fg='lavender', font=("Calibri", 16)).place(relx=0.5, rely=0.4, anchor='center')
+        tk.Button(self, text="Yes", command=self.yes, width=15, bg='LightSteelBlue2', fg='black').place(relx=0.35, rely=0.7, anchor='center')
+        tk.Button(self, text="No", command=self.no, width=15, bg='LightSteelBlue2', fg='black').place(relx=0.65, rely=0.7, anchor='center')
+
+        self.result = None
+
+    def yes(self):
+        self.result = True
+        self.destroy()
+
+    def no(self):
+        self.result = False
+        self.destroy()
 
 def confirm_exit():
     root = tk.Tk()
     root.withdraw()  # Hide the main window
-    result = messagebox.askquestion("Exit Confirmation", "You still have a chance to be moved on. Are you sure to stop using our lovely software?", icon='warning')
+    dialog = CustomDialog(root)
+    root.wait_window(dialog)
     root.destroy()  # Destroy the main window
-    return result == 'yes'
+    return dialog.result
+#=====================================================#
 
 while True:
     # Read the video frame
