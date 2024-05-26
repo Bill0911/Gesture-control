@@ -2,10 +2,8 @@ import cv2
 import mediapipe as mp
 from math import hypot
 import screen_brightness_control as sbc
-import numpy as np
 import pyautogui
 import time
-import tkinter as tk
 from tkinter import messagebox
 
 # Create the hand recognizer model
@@ -15,7 +13,8 @@ hands = mpHands.Hands(
     model_complexity=1,
     min_detection_confidence=0.75,
     min_tracking_confidence=0.75,
-    max_num_hands=2)
+    max_num_hands=2,
+)
 
 Draw = mp.solutions.drawing_utils
 
@@ -30,39 +29,8 @@ last_index_y = None
 last_tab_time = 0
 tab_coolDown = 1.5
 new_tab_opened = False
-#=====================
+# =====================
 last_switch = time.time()
-#================CUSTOM NOTIFICATION===============#
-class CustomDialog(tk.Toplevel):
-    def __init__(self, parent):
-        tk.Toplevel.__init__(self, parent)
-        self.title("Are you bored ?")
-        self.configure(bg='DeepSkyBlue4')
-        self.geometry("500x300")
-
-        tk.Label(self, text="This is the sign of being dulled.", bg='DeepSkyBlue4', fg='lavender', font=("Calibri", 15)).place(relx=0.5, rely=0.25, anchor='center')
-        tk.Label(self, text="Are you sure to stop using this lovely control ?", bg='DeepSkyBlue4', fg='lavender', font=("Calibri", 16)).place(relx=0.5, rely=0.4, anchor='center')
-        tk.Button(self, text="Yes", command=self.yes, width=15, bg='LightSteelBlue2', fg='black').place(relx=0.35, rely=0.7, anchor='center')
-        tk.Button(self, text="No", command=self.no, width=15, bg='LightSteelBlue2', fg='black').place(relx=0.65, rely=0.7, anchor='center')
-
-        self.result = None
-
-    def yes(self):
-        self.result = True
-        self.destroy()
-
-    def no(self):
-        self.result = False
-        self.destroy()
-
-def confirm_exit():
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    dialog = CustomDialog(root)
-    root.wait_window(dialog)
-    root.destroy()  # Destroy the main window
-    return dialog.result
-#=====================================================#
 
 while True:
     # Read the video frame
@@ -78,7 +46,7 @@ while True:
     Process = hands.process(frameRGB)
 
     landmarkList = []
-    
+
     # If hands are detected in the image
     if Process.multi_hand_landmarks:
         # Recognize hand landmarks
@@ -86,7 +54,7 @@ while True:
             # Get the handedness of the detected hand
             handedness = Process.multi_handedness[0].classification[0].label
             # Only process the landmarks if the detected hand is the right hand
-            if handedness == 'Right':
+            if handedness == "Right":
                 for _id, landmarks in enumerate(handlm.landmark):
                     # Store the height and width of the image
                     height, width, color_channels = frame.shape
@@ -101,7 +69,9 @@ while True:
     # If the landmarks list is not empty
     if landmarkList != []:
         # Scroll up or down
-        if len(landmarkList) >= 21:  # Make sure the index finger tip and middle finger tip are detected
+        if (
+            len(landmarkList) >= 21
+        ):  # Make sure the index finger tip and middle finger tip are detected
             index_tip = landmarkList[8]
             thumb_tip = landmarkList[4]
             thumb_base = landmarkList[2]
@@ -117,32 +87,45 @@ while True:
                 last_index_y = index_tip[2]
 
             if time.time() - last_scroll_time > scroll_coolDown:
-                if index_tip[2] < middle_tip[2] and abs(index_tip[2] - last_index_y) > min_scroll_distance:
+                if (
+                    index_tip[2] < middle_tip[2]
+                    and abs(index_tip[2] - last_index_y) > min_scroll_distance
+                ):
                     print("Scrolling up")
                     pyautogui.scroll(380)
-                    last_scroll_time = time.time()
-            elif thumb_tip[2] < index_tip[2] and abs(index_tip[2] - last_index_y) > min_scroll_distance:
+                    last_scroll_time = int(time.time())
+            elif (
+                thumb_tip[2] < index_tip[2]
+                and abs(index_tip[2] - last_index_y) > min_scroll_distance
+            ):
                 print("Scrolling down")
                 pyautogui.scroll(-50)
-                last_scroll_time = time.time()
+                last_scroll_time = int(time.time())
             elif pinky_tip[2] < pinky_pip[2] and pinky_tip[2] > index_tip[2]:
                 print("Switching tabs")
-                pyautogui.keyDown('ctrl')
-                pyautogui.press('tab')
-                pyautogui.keyUp('ctrl')
+                pyautogui.keyDown("ctrl")
+                pyautogui.press("tab")
+                pyautogui.keyUp("ctrl")
                 time.sleep(1)
                 last_switch = time.time()
-            elif thumb_tip[2] > thumb_base[2] and index_tip[2] < thumb_tip[2] and index_tip[2] < index_pip[2]:
-               if confirm_exit(): 
-                  print("Turning off webcam")
-                  break
-               else:
-                  print("Continuing webcam")
-            
+            elif (
+                thumb_tip[2] > thumb_base[2]
+                and index_tip[2] < thumb_tip[2]
+                and index_tip[2] < index_pip[2]
+            ):
+                print("Turning off webcam")
+                result = messagebox.askyesno(
+                    "Confirm Exit", "Do you actually want to do this?"
+                )
+                if result:
+                    break
 
+                print("Continuing webcam")
         last_index_y = index_tip[2]
 
     # If the user wants to turn off the webcam, press 'q'
-    cv2.imshow('Image', frame)
-    if cv2.waitKey(1) & 0xff == ord('q'):
-        break
+    cv2.imshow("Image", frame)
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        result = messagebox.askyesno("Confirm Exit", "Do you actually want to do this?")
+        if result:
+            break

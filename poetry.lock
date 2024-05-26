@@ -1191,6 +1191,17 @@ CFFI = ">=1.0"
 numpy = ["NumPy"]
 
 [[package]]
+name = "tk"
+version = "0.1.0"
+description = "TensorKit is a deep learning helper between Python and C++."
+optional = false
+python-versions = "*"
+files = [
+    {file = "tk-0.1.0-py3-none-any.whl", hash = "sha256:703a69ff0d5ba2bd2f7440582ad10160e4a6561595d33457dc6caa79b9bf4930"},
+    {file = "tk-0.1.0.tar.gz", hash = "sha256:60bc8923d5d35f67f5c6bd93d4f0c49d2048114ec077768f959aef36d4ed97f8"},
+]
+
+[[package]]
 name = "wmi"
 version = "1.5.1"
 description = "Windows Management Instrumentation"
@@ -1214,4 +1225,4 @@ tests = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8bba235f820242e48d93d1d96a562ce2d2177c66154f36a5884835284390f798"
+content-hash = "283795a30ba8bbcad1095216937a15f167d4d37134cd6dd4dc9464a1627f9677"

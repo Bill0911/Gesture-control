@@ -4,6 +4,7 @@ from math import hypot
 import screen_brightness_control as sbc
 import numpy as np
 import pyautogui
+from tkinter import messagebox
 
 # Creating the hand recognizer model
 mpHands = mp.solutions.hands
@@ -12,7 +13,7 @@ hands = mpHands.Hands(
     model_complexity=1,
     min_detection_confidence=0.75,
     min_tracking_confidence=0.75,
-    max_num_hands=2
+    max_num_hands=2,
 )
 
 Draw = mp.solutions.drawing_utils
@@ -20,8 +21,10 @@ Draw = mp.solutions.drawing_utils
 # Starting webcam to capture
 cap = cv2.VideoCapture(0)
 
+
 def calculate_distance(point1, point2):
     return hypot(point2[0] - point1[0], point2[1] - point1[1])
+
 
 while True:
     # Read video frame
@@ -64,10 +67,10 @@ while True:
                 pinky_tip = landmarkList[20][1:]
 
                 # Calculate distances
-                volumeup_distance= calculate_distance(thumb_tip, index_tip)
+                volumeup_distance = calculate_distance(thumb_tip, index_tip)
                 volumedown_distance = calculate_distance(thumb_tip, middle_tip)
 
-                brightnessup_distance= calculate_distance(thumb_tip, ring_tip)
+                brightnessup_distance = calculate_distance(thumb_tip, ring_tip)
                 brightnessdown_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # Adjust volume
@@ -79,9 +82,11 @@ while True:
                     pyautogui.press("volumedown")
 
     # Display the image
-    cv2.imshow('Image', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    cv2.imshow("Image", frame)
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        result = messagebox.askyesno("Confirm Exit", "Do you actually want to do this?")
+        if result:
+            break
 
 cap.release()
 cv2.destroyAllWindows()
