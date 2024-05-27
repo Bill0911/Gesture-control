@@ -84,10 +84,10 @@ while True:
                 # Adjust volume
                 zoom_up_level = np.interp(zoom_up_distance, [15, 220], [0, 100])
                 if zoom_up_level < 10:
-                    pyautogui.hotkey("super", "+")
+                    pyautogui.hotkey("ctrl","+")
                 zoom_down_level = np.interp(zoom_down_distance, [15, 220], [0, 100])
                 if zoom_down_level < 10:
-                    pyautogui.hotkey("super", "-")
+                    pyautogui.hotkey("ctrl","-")
 
     # Display the image
     cv2.imshow("Image", frame)
