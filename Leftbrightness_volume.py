@@ -59,7 +59,7 @@ while True:
             Draw.draw_landmarks(frame, handlm, mpHands.HAND_CONNECTIONS)
 
             if landmarkList:
-                # Get coordinates for thumb, index, and middle fingers
+                # Get coordinates for fingers
                 thumb_tip = landmarkList[4][1:]
                 index_tip = landmarkList[8][1:]
                 middle_tip = landmarkList[12][1:]
@@ -81,6 +81,7 @@ while True:
                 if volumedown_level < 10:
                     pyautogui.press("volumedown")
 
+                # Adjust volume
                 zoom_up_level = np.interp(zoom_up_distance, [15, 220], [0, 100])
                 if zoom_up_level < 10:
                     pyautogui.hotkey("super", "+")
