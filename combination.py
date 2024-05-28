@@ -14,6 +14,10 @@ mp_drawing = mp.solutions.drawing_utils
 # Initialize webcam
 cap = cv2.VideoCapture(0)
 
+# Set a smaller frame size for faster processing
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
 # Define region of interest (ROI) within the webcam frame
 ROI_TOP = 0.2  # Top 20% of the frame height
 ROI_BOTTOM = 0.8  # Bottom 80% of the frame height
@@ -34,6 +38,7 @@ def detect_two_fingers_up(hand_landmarks):
     return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
+    # Calculate the distance between thumb tip and index finger MCP
     index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
     thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
 
@@ -46,6 +51,7 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
 while cap.isOpened():
+    start_time = time.time()
     success, image = cap.read()
     if not success:
         break
@@ -64,7 +70,6 @@ while cap.isOpened():
         for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
             label = handedness.classification[0].label
             if label == 'Right':
-                mp_drawing.draw_landmarks(image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 if detect_two_fingers_up(hand_landmarks):
                     middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
                     
@@ -89,24 +94,15 @@ while cap.isOpened():
                     # Move the mouse pointer
                     pyautogui.moveTo(smooth_x, smooth_y)
 
-                    # Draw a circle at the cursor position on the image
+                    # Optionally draw a circle at the cursor position on the image
                     cursor_x = int(width * middle_tip.x)
                     cursor_y = int(height * middle_tip.y)
                     cv2.circle(image, (cursor_x, cursor_y), 10, (0, 255, 0), -1)
-
-                    # Draw a dot within the ROI to indicate the finger position
-                    roi_cursor_x = int(top_left[0] + norm_x * (bottom_right[0] - top_left[0]))
-                    roi_cursor_y = int(top_left[1] + norm_y * (bottom_right[1] - top_left[1]))
-                    cv2.circle(image, (roi_cursor_x, roi_cursor_y), 10, (0, 0, 255), -1)
-
-                    # Optionally, display the coordinates on the image
-                    cv2.putText(image, f'({int(smooth_x)}, {int(smooth_y)})', (cursor_x, cursor_y - 20),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
                 
                 # Detect thumb near index finger MCP for clicking
                 distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y = detect_thumb_near_index_mcp(hand_landmarks, height, width)
                 
-                # Draw circles on thumb and index finger MCP
+                # Draw circles on thumb and index finger MCP for visual feedback
                 cv2.circle(image, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1)
                 cv2.circle(image, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
                 
@@ -115,13 +111,17 @@ while cap.isOpened():
                     pyautogui.click()
                     pyautogui.sleep(0.1)
 
+    # Display the frame
     cv2.imshow('Hand Tracking', image)
 
-    # Adjust the key to something else if needed
-    if cv2.waitKey(5) & 0xFF == 27:  # Use the 'Esc' key to close the program
+    # Break the loop on 'Esc' key press
+    if cv2.waitKey(5) & 0xFF == 27:
         break
 
-    time.sleep(0.01)
+    # Calculate and display FPS
+    end_time = time.time()
+    fps = 1 / (end_time - start_time)
+    print(f"FPS: {fps}")
 
 cap.release()
 cv2.destroyAllWindows()
