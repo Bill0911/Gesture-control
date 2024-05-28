@@ -146,7 +146,7 @@ while True:
                         pyautogui.hotkey("ctrl", "-")
 
                 # Right hand gestures
-                elif label == "Right":
+                if label == "Right":
                     current_time = time.time()
                     if detect_two_fingers_up(hand_landmarks):
                         print("mouse control")
@@ -203,7 +203,7 @@ while True:
                             last_scroll_time = current_time
                         elif (
                             index_pip.y < index_tip.y
-                            and (index_pip.y - index_tip.y) * 10 < -1.5
+                            and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
                             pyautogui.scroll(-50)
