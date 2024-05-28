@@ -7,6 +7,8 @@ import numpy as np
 import pyautogui
 from tkinter import messagebox
 
+from screen_brightness_control.types import sys
+
 # Creating the hand recognizer model
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
@@ -28,7 +30,7 @@ ROI_RIGHT = 0.8  # Right 80% of the frame width
 
 # Smoothing parameters
 prev_x, prev_y = 0.0, 0.0
-smooth_factor = 0.2
+smooth_factor = 0.8
 
 
 def detect_two_fingers_up(hand_landmarks):
@@ -38,9 +40,21 @@ def detect_two_fingers_up(hand_landmarks):
     middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
     middle_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP]
 
-    if index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y:
-        return True
-    return False
+    return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
+
+
+def detect_thumb_near_index_mcp(hand_landmarks, height, width):
+    # Calculate the distance between thumb tip and index finger MCP
+    index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
+    thumb_tip = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
+
+    index_mcp_x = int(index_mcp.x * width)
+    index_mcp_y = int(index_mcp.y * height)
+    thumb_x = int(thumb_tip.x * width)
+    thumb_y = int(thumb_tip.y * height)
+
+    distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
+    return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
 
 # Starting webcam to capture
@@ -50,7 +64,7 @@ pyautogui.FAILSAFE = False
 
 
 def calculate_distance(point1, point2):
-    return hypot(point2[0] - point1[0], point2[1] - point1[1])
+    return hypot(point2.x - point1.x, point2.y - point1.y)
 
 
 last_index_y = None
@@ -77,36 +91,33 @@ while True:
     height, width, _ = frame.shape
     top_left = (int(width * ROI_LEFT), int(height * ROI_TOP))
     bottom_right = (int(width * ROI_RIGHT), int(height * ROI_BOTTOM))
+    cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
 
-    landmarkList = []
     if process.multi_hand_landmarks:
-        for hand_no, handlm in enumerate(process.multi_hand_landmarks):
-            # Identify if the hand is left or right
-            handedness = process.multi_handedness[hand_no].classification[0].label
-
-            for _id, lm in enumerate(handlm.landmark):
-                h, w, _ = frame.shape
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                landmarkList.append([_id, cx, cy])
+        for hand_landmarks, handedness in zip(
+            process.multi_hand_landmarks, process.multi_handedness
+        ):
+            label = handedness.classification[0].label
 
             # Draw landmarks
-            Draw.draw_landmarks(frame, handlm, mp_hands.HAND_CONNECTIONS)
+            Draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
-            if landmarkList:
+            if hand_landmarks:
                 # Get coordinates for fingers
-                thumb_base = landmarkList[2]
-                thumb_tip = landmarkList[4]
-                index_pip = landmarkList[6]
-                index_tip = landmarkList[8]
-                middle_pip = landmarkList[10]
-                middle_tip = landmarkList[12]
-                ring_pip = landmarkList[14]
-                ring_tip = landmarkList[16]
-                pinky_pip = landmarkList[18]
-                pinky_tip = landmarkList[20]
+                thumb_base = hand_landmarks.landmark[2]
+                thumb_tip = hand_landmarks.landmark[4]
+                index_pip = hand_landmarks.landmark[6]
+                index_tip = hand_landmarks.landmark[8]
+                middle_mcp = hand_landmarks.landmark[9]
+                middle_pip = hand_landmarks.landmark[10]
+                middle_tip = hand_landmarks.landmark[12]
+                ring_pip = hand_landmarks.landmark[14]
+                ring_tip = hand_landmarks.landmark[16]
+                pinky_pip = hand_landmarks.landmark[18]
+                pinky_tip = hand_landmarks.landmark[20]
 
                 if last_index_y is None:
-                    last_index_y = index_tip[2]
+                    last_index_y = index_tip.y
 
                 # Calculate distances
                 volumeup_distance = calculate_distance(thumb_tip, index_tip)
@@ -115,7 +126,7 @@ while True:
                 zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # Left hand gestures
-                if handedness == "Left":
+                if label == "Left":
                     # Adjust volume for left hand
                     volumeup_level = np.interp(volumeup_distance, [0, 220], [0, 100])
                     if volumeup_level < 10:
@@ -135,39 +146,13 @@ while True:
                         pyautogui.hotkey("ctrl", "-")
 
                 # Right hand gestures
-                elif handedness == "Right":
+                elif label == "Right":
                     current_time = time.time()
-                    if current_time - last_scroll_time > scroll_coolDown:
-                        if (
-                            index_tip[2] < middle_tip[2]
-                            and abs(index_tip[2] - last_index_y) > min_scroll_distance
-                        ):
-                            print("Scrolling up")
-                            pyautogui.scroll(380)
-                            last_scroll_time = current_time
-                        elif (
-                            thumb_tip[2] < index_tip[2]
-                            and abs(index_tip[2] - last_index_y) > min_scroll_distance
-                        ):
-                            print("Scrolling down")
-                            pyautogui.scroll(-50)
-                            last_scroll_time = current_time
-                        elif (
-                            pinky_tip[2] < pinky_pip[2] and pinky_tip[2] > index_tip[2]
-                        ):
-                            print("Switching tabs")
-                            pyautogui.keyDown("ctrl")
-                            pyautogui.press("tab")
-                            pyautogui.keyUp("ctrl")
-                            time.sleep(1)
-                            last_switch = time.time()
-
-                    if detect_two_fingers_up(handlm):
+                    if detect_two_fingers_up(hand_landmarks):
                         print("mouse control")
-
                         # Normalize the coordinates within the frame
-                        norm_x = (index_tip[1] - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
-                        norm_y = (index_tip[1] - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
+                        norm_x = (middle_tip.x - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
+                        norm_y = (middle_tip.y - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
 
                         # Clamp normalized coordinates to [0, 1] range
                         norm_x = min(max(norm_x, 0), 1)
@@ -186,44 +171,63 @@ while True:
                         # Move the mouse pointer
                         pyautogui.moveTo(smooth_x, smooth_y)
 
-                        # Draw a circle at the cursor position on the image
-                        cursor_x = int(width * index_tip[2])
-                        cursor_y = int(height * index_tip[1])
+                        # Optionally draw a circle at the cursor position on the image
+                        cursor_x = int(width * middle_tip.x)
+                        cursor_y = int(height * middle_tip.y)
                         cv2.circle(frame, (cursor_x, cursor_y), 10, (0, 255, 0), -1)
 
-                        # Draw a dot within the ROI to indicate the finger position
-                        roi_cursor_x = int(
-                            top_left[0] + norm_x * (bottom_right[0] - top_left[0])
+                        # Detect thumb near index finger MCP for clicking
+                        distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y = (
+                            detect_thumb_near_index_mcp(hand_landmarks, height, width)
                         )
-                        roi_cursor_y = int(
-                            top_left[1] + norm_y * (bottom_right[1] - top_left[1])
-                        )
+
+                        # Draw circles on thumb and index finger MCP for visual feedback
                         cv2.circle(
-                            frame, (roi_cursor_x, roi_cursor_y), 10, (0, 0, 255), -1
+                            frame, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1
                         )
+                        cv2.circle(frame, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
 
-                        # Optionally, display the coordinates on the image
-                        cv2.putText(
-                            frame,
-                            f"({int(smooth_x)}, {int(smooth_y)})",
-                            (cursor_x, cursor_y - 20),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.8,
-                            (0, 255, 0),
-                            2,
-                        )
+                        # Click action when thumb is near index finger MCP
+                        if distance < 40:
+                            pyautogui.click()
+                            pyautogui.sleep(0.1)
 
-                    elif (
-                        thumb_tip[2] > thumb_base[2]
-                        and index_tip[2] < thumb_tip[2]
-                        and index_tip[2] < index_pip[2]
+                    if current_time - last_scroll_time > scroll_coolDown:
+                        if (
+                            index_pip.y > index_tip.y
+                            and middle_tip.y > middle_mcp.y
+                            and (index_pip.y - index_tip.y) * 10 > 1.05
+                        ):
+                            print("Scrolling up")
+                            pyautogui.scroll(380)
+                            last_scroll_time = current_time
+                        elif (
+                            index_pip.y < index_tip.y
+                            and (index_pip.y - index_tip.y) * 10 < -1.5
+                        ):
+                            print("Scrolling down")
+                            pyautogui.scroll(-50)
+                            last_scroll_time = current_time
+                        elif pinky_tip.y < pinky_pip.y and pinky_tip.y > index_tip.y:
+                            print("Switching tabs")
+                            pyautogui.keyDown("ctrl")
+                            pyautogui.press("tab")
+                            pyautogui.keyUp("ctrl")
+                            time.sleep(1)
+                            last_switch = time.time()
+
+                    if (
+                        thumb_tip.y > thumb_base.y
+                        and index_tip.y < thumb_tip.y
+                        and index_tip.y < index_pip.y
                     ):
                         print("Turning off webcam")
                         result = messagebox.askyesno(
                             "Confirm Exit", "Do you actually want to do this?"
                         )
+
                         if result:
-                            break
+                            sys.exit(1)
 
     # Display the image
     cv2.imshow("Image", frame)
