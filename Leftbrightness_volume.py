@@ -8,8 +8,8 @@ import pyautogui
 from tkinter import messagebox
 
 # Creating the hand recognizer model
-mpHands = mp.solutions.hands
-hands = mpHands.Hands(
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(
     static_image_mode=False,
     model_complexity=1,
     min_detection_confidence=0.75,
@@ -18,6 +18,30 @@ hands = mpHands.Hands(
 )
 
 Draw = mp.solutions.drawing_utils
+
+
+# Define region of interest (ROI) within the webcam frame
+ROI_TOP = 0.2  # Top 20% of the frame height
+ROI_BOTTOM = 0.8  # Bottom 80% of the frame height
+ROI_LEFT = 0.2  # Left 20% of the frame width
+ROI_RIGHT = 0.8  # Right 80% of the frame width
+
+# Smoothing parameters
+prev_x, prev_y = 0.0, 0.0
+smooth_factor = 0.2
+
+
+def detect_two_fingers_up(hand_landmarks):
+    # Check if index and middle fingers are up
+    index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
+    index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
+    middle_tip = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP]
+    middle_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP]
+
+    if index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y:
+        return True
+    return False
+
 
 # Starting webcam to capture
 cap = cv2.VideoCapture(0)
@@ -50,6 +74,10 @@ while True:
     # Processing RGB image
     process = hands.process(frameRGB)
 
+    height, width, _ = frame.shape
+    top_left = (int(width * ROI_LEFT), int(height * ROI_TOP))
+    bottom_right = (int(width * ROI_RIGHT), int(height * ROI_BOTTOM))
+
     landmarkList = []
     if process.multi_hand_landmarks:
         for hand_no, handlm in enumerate(process.multi_hand_landmarks):
@@ -62,7 +90,7 @@ while True:
                 landmarkList.append([_id, cx, cy])
 
             # Draw landmarks
-            Draw.draw_landmarks(frame, handlm, mpHands.HAND_CONNECTIONS)
+            Draw.draw_landmarks(frame, handlm, mp_hands.HAND_CONNECTIONS)
 
             if landmarkList:
                 # Get coordinates for fingers
@@ -133,17 +161,69 @@ while True:
                             pyautogui.keyUp("ctrl")
                             time.sleep(1)
                             last_switch = time.time()
-                        elif (
-                            thumb_tip[2] > thumb_base[2]
-                            and index_tip[2] < thumb_tip[2]
-                            and index_tip[2] < index_pip[2]
-                        ):
-                            print("Turning off webcam")
-                            result = messagebox.askyesno(
-                                "Confirm Exit", "Do you actually want to do this?"
-                            )
-                            if result:
-                                break
+
+                    if detect_two_fingers_up(handlm):
+                        print("mouse control")
+
+                        # Normalize the coordinates within the frame
+                        norm_x = (index_tip[1] - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
+                        norm_y = (index_tip[1] - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
+
+                        # Clamp normalized coordinates to [0, 1] range
+                        norm_x = min(max(norm_x, 0), 1)
+                        norm_y = min(max(norm_y, 0), 1)
+
+                        # Convert normalized coordinates to screen coordinates
+                        screen_width, screen_height = pyautogui.size()
+                        screen_x = int(screen_width * norm_x)
+                        screen_y = int(screen_height * norm_y)
+
+                        # Smooth the cursor movement
+                        smooth_x = prev_x + (screen_x - prev_x) * smooth_factor
+                        smooth_y = prev_y + (screen_y - prev_y) * smooth_factor
+                        prev_x, prev_y = smooth_x, smooth_y
+
+                        # Move the mouse pointer
+                        pyautogui.moveTo(smooth_x, smooth_y)
+
+                        # Draw a circle at the cursor position on the image
+                        cursor_x = int(width * index_tip[2])
+                        cursor_y = int(height * index_tip[1])
+                        cv2.circle(frame, (cursor_x, cursor_y), 10, (0, 255, 0), -1)
+
+                        # Draw a dot within the ROI to indicate the finger position
+                        roi_cursor_x = int(
+                            top_left[0] + norm_x * (bottom_right[0] - top_left[0])
+                        )
+                        roi_cursor_y = int(
+                            top_left[1] + norm_y * (bottom_right[1] - top_left[1])
+                        )
+                        cv2.circle(
+                            frame, (roi_cursor_x, roi_cursor_y), 10, (0, 0, 255), -1
+                        )
+
+                        # Optionally, display the coordinates on the image
+                        cv2.putText(
+                            frame,
+                            f"({int(smooth_x)}, {int(smooth_y)})",
+                            (cursor_x, cursor_y - 20),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.8,
+                            (0, 255, 0),
+                            2,
+                        )
+
+                    elif (
+                        thumb_tip[2] > thumb_base[2]
+                        and index_tip[2] < thumb_tip[2]
+                        and index_tip[2] < index_pip[2]
+                    ):
+                        print("Turning off webcam")
+                        result = messagebox.askyesno(
+                            "Confirm Exit", "Do you actually want to do this?"
+                        )
+                        if result:
+                            break
 
     # Display the image
     cv2.imshow("Image", frame)
