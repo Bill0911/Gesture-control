@@ -1202,6 +1202,34 @@ files = [
 ]
 
 [[package]]
+name = "types-pyautogui"
+version = "0.9.3.20240406"
+description = "Typing stubs for PyAutoGUI"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-PyAutoGUI-0.9.3.20240406.tar.gz", hash = "sha256:7480c27ab044976800b37ac77538086f479a0897f3046ea72e5d4fda27741f12"},
+    {file = "types_PyAutoGUI-0.9.3.20240406-py3-none-any.whl", hash = "sha256:ef8691548986018e21a2e69245e815eb0b1fddde9d05b05750392aeef50e69f7"},
+]
+
+[package.dependencies]
+types-PyScreeze = "*"
+
+[[package]]
+name = "types-pyscreeze"
+version = "0.1.30.20240406"
+description = "Typing stubs for PyScreeze"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-PyScreeze-0.1.30.20240406.tar.gz", hash = "sha256:8cb08d0bd41646f521b0b4973d9c4132ac1fd71f2796a4c36c63ba86f2b35cb3"},
+    {file = "types_PyScreeze-0.1.30.20240406-py3-none-any.whl", hash = "sha256:abefc243e97fefe925c30cacd3b14586ff500bb08ebe906fe17698cd20ca02cf"},
+]
+
+[package.dependencies]
+Pillow = ">=10.3.0"
+
+[[package]]
 name = "wmi"
 version = "1.5.1"
 description = "Windows Management Instrumentation"
@@ -1225,4 +1253,4 @@ tests = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "283795a30ba8bbcad1095216937a15f167d4d37134cd6dd4dc9464a1627f9677"
+content-hash = "6c7f618e2d9cf1480b7d96c6a546a28945f46408f1ea34f673c837fe91eb54b7"
