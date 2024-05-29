@@ -29,7 +29,6 @@ last_index_y = None
 last_tab_time = 0
 tab_coolDown = 1.5
 new_tab_opened = False
-# =====================
 last_switch = time.time()
 
 while True:
@@ -115,7 +114,7 @@ while True:
             ):
                 print("Turning off webcam")
                 result = messagebox.askyesno(
-                    "Confirm Exit", "Do you actually want to do this?"
+                    "Confirm Exit", "Do you mean to stop using it ?"
                 )
                 if result:
                     break
@@ -126,6 +125,6 @@ while True:
     # If the user wants to turn off the webcam, press 'q'
     cv2.imshow("Image", frame)
     if cv2.waitKey(1) & 0xFF == ord("q"):
-        result = messagebox.askyesno("Confirm Exit", "Do you actually want to do this?")
+        result = messagebox.askyesno("Confirm Exit", "Do you mean to stop using it ?")
         if result:
             break
