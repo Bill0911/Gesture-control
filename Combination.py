@@ -31,6 +31,9 @@ ROI_RIGHT = 0.8  # Right 80% of the frame width
 # Smoothing parameters
 SMOTH_FACTOR = 0.8
 
+# Get screen size
+SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
+
 prev_x, prev_y = 0.0, 0.0
 last_scroll_time = time()
 scroll_cool_down = 1
@@ -62,6 +65,30 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
 
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
+
+class KalmanFilter:
+#Kalman filter is an algorithm that predicts a parameter of interests 
+#such as location, speed, and direction in the presence of noise and measurements
+    def __init__(self, process_variance, estimated_measurement_variance):
+        self.process_variance = process_variance
+        self.estimated_measurement_variance = estimated_measurement_variance
+        self.posteri_estimate = 0.0
+        self.posteri_error_estimate = 1.0
+
+    def input_latest_noisy_measurement(self, measurement):
+        priori_estimate = self.posteri_estimate
+        priori_error_estimate = self.posteri_error_estimate + self.process_variance
+
+        blending_factor = priori_error_estimate / (priori_error_estimate + self.estimated_measurement_variance)
+        self.posteri_estimate = priori_estimate + blending_factor * (measurement - priori_estimate)
+        self.posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
+
+    def get_latest_estimated_measurement(self):
+        return self.posteri_estimate
+    
+# Initialize the Kalman filters
+kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.1)
+kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.1)
 
 # Starting webcam to capture
 cap = cv2.VideoCapture(0)
@@ -170,6 +197,16 @@ while True:
                         # Normalize the coordinates within the frame
                         norm_x = (middle_tip.x - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
                         norm_y = (middle_tip.y - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
+
+                        # Filter the positions
+                        kf_x.input_latest_noisy_measurement(norm_x)
+                        kf_y.input_latest_noisy_measurement(norm_y)
+                        filtered_x = kf_x.get_latest_estimated_measurement()
+                        filtered_y = kf_y.get_latest_estimated_measurement()
+
+                        # Use the filtered positions for mouse control
+                        screen_x = filtered_x * SCREEN_WIDTH
+                        screen_y = filtered_y * SCREEN_HEIGHT
 
                         # Clamp normalized coordinates to [0, 1] range
                         norm_x = min(max(norm_x, 0), 1)
