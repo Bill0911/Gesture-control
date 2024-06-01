@@ -133,7 +133,6 @@ while True:
             index_mcp_x = index_mcp.x
             index_mcp_y = index_mcp.y
 
-            # Convert normalized coordinates to pixel coordinates
             if frame.shape[1] and frame.shape[0]:
                 if index_mcp_x is not None and index_mcp_y is not None:
                     try:
