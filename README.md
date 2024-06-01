@@ -8,9 +8,15 @@ Updated version of Gesture Control
 * Scroll up-down: raise your index finger to scroll up, lower your index finger to scroll down.
 * Switch tab: raise both your index and pinky finger to switch tabs.
 * Turn off webcam: thumb down to turn off your webcam. (fixing)
+<<<<<<< HEAD
 
 * Moving and clicking, dragging. (fixing)
   ### Daily tip:
 One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent as it’s being relaxed. 
 
+=======
+* Moving and clicking, dragging. (fixing)
+  ### Daily tip:
+One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent as it’s being relaxed.
+>>>>>>> 75d88ef (Update README.md)
 
