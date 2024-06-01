@@ -34,6 +34,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
+
 prev_x, prev_y = 0.0, 0.0
 last_scroll_time = time()
 scroll_cool_down = 1
@@ -87,8 +88,8 @@ class KalmanFilter:
         return self.posteri_estimate
     
 # Initialize the Kalman filters
-kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.1)
-kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.1)
+kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
+kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
 # Starting webcam to capture
 cap = cv2.VideoCapture(0)
@@ -131,15 +132,13 @@ while True:
                     try:
                         index_mcp_x_px = int(index_mcp_x * frame.shape[1])
                         index_mcp_y_px = int(index_mcp_y * frame.shape[0])
-                    except ValueError:
-                        raise ValueError(
-                            f"Invalid values for index_mcp_x or index_mcp_y"
-                        )
 
-                    # Draw a circle at the index finger MCP joint
-                    try:
                         cv2.circle(
-                            frame, (index_mcp_x_px, index_mcp_y_px), 10, (0, 255, 255), -1
+                            frame,
+                            (index_mcp_x_px, index_mcp_y_px),
+                            10,
+                            (0, 255, 255),
+                            -1,
                         )
                     except cv2.error as e:
                         print(f"OpenCV error: {e}")
