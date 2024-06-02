@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import sys
-=======
->>>>>>> 2549b6c (Improved the jittery cursor by improving Kalman filter)
 from time import time
 from math import hypot
 import cv2
@@ -37,12 +33,11 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-<<<<<<< HEAD
+
 SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
 SCROLL_ITERATIONS = 10  # Number of iterations
 
-=======
->>>>>>> 2549b6c (Improved the jittery cursor by improving Kalman filter)
+
 
 prev_x, prev_y = 0.0, 0.0
 last_scroll_time = time()
@@ -302,19 +297,19 @@ while True:
                             and (index_pip.y - index_tip.y) * 10 > 1.05
                         ):
                             print("Scrolling up")
-<<<<<<< HEAD
+
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(SCROLL_AMOUNT)
-=======
+
                             pyautogui.scroll(100)
->>>>>>> 2549b6c (Improved the jittery cursor by improving Kalman filter)
+
                             last_scroll_time = current_time
                         elif (
                             index_pip.y < index_tip.y
                             and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
-<<<<<<< HEAD
+
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(-SCROLL_AMOUNT)
                             last_scroll_time = current_time
@@ -329,11 +324,11 @@ while True:
                             )
                             if result:
                                 sys.exit()
-=======
+
                             pyautogui.scroll(-100)
                             last_scroll_time = current_time
 
->>>>>>> 2549b6c (Improved the jittery cursor by improving Kalman filter)
+
     # Display the image
     cv2.imshow("Image", frame)
     if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -343,7 +338,7 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-<<<<<<< HEAD
-=======
 
->>>>>>> 2549b6c (Improved the jittery cursor by improving Kalman filter)
+
+
+
