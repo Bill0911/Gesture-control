@@ -17,6 +17,10 @@ One way to click comfortably as possible is try to click by catching your ring f
 =======
 * Moving and clicking, dragging. (fixing)
   ### Daily tip:
+<<<<<<< HEAD
 One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent as it’s being relaxed.
 >>>>>>> 75d88ef (Update README.md)
+=======
+One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent a bit as it’s being relaxed.
+>>>>>>> 80088fe (Update README.md)
 
