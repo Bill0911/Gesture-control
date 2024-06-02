@@ -33,6 +33,9 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
+SCROLL_AMOUNT = 20 #Amount to scroll in each iteration
+SCROLL_ITERATIONS = 10 # Number of iterations
+
 
 prev_x, prev_y = 0.0, 0.0
 last_scroll_time = time()
@@ -292,14 +295,16 @@ while True:
                             and (index_pip.y - index_tip.y) * 10 > 1.05
                         ):
                             print("Scrolling up")
-                            pyautogui.scroll(100)
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(SCROLL_AMOUNT)
                             last_scroll_time = current_time
                         elif (
                             index_pip.y < index_tip.y
                             and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
-                            pyautogui.scroll(-100)
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(-SCROLL_AMOUNT)
                             last_scroll_time = current_time
 
     # Display the image
@@ -311,4 +316,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
