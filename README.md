@@ -10,5 +10,5 @@ Updated version of Gesture Control
 * Turn off webcam: thumb down to turn off your webcam. (fixing)
 * Moving and clicking, dragging. (fixing)
   ### Daily tip:
-One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent a bit as it’s being relaxed.
+One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent a bit as they are being relaxed.
 
