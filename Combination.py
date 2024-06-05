@@ -1,3 +1,4 @@
+import sys
 from time import time
 from math import hypot
 import cv2
@@ -33,8 +34,8 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 20 #Amount to scroll in each iteration
-SCROLL_ITERATIONS = 10 # Number of iterations
+SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
+SCROLL_ITERATIONS = 10  # Number of iterations
 
 
 prev_x, prev_y = 0.0, 0.0
@@ -306,7 +307,17 @@ while True:
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(-SCROLL_AMOUNT)
                             last_scroll_time = current_time
-
+                        elif (
+                            detect_thumb_near_index_mcp(hand_landmarks, height, width)[
+                                0
+                            ]
+                            > 150
+                        ):
+                            result = messagebox.askyesno(
+                                "Confirm Exit", "Do you actually want to do this?"
+                            )
+                            if result:
+                                sys.exit()
     # Display the image
     cv2.imshow("Image", frame)
     if cv2.waitKey(1) & 0xFF == ord("q"):
