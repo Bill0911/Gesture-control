@@ -33,6 +33,9 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
+SCROLL_AMOUNT = 20 #Amount to scroll in each iteration
+SCROLL_ITERATIONS = 10 # Number of iterations
+
 
 SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
 SCROLL_ITERATIONS = 10  # Number of iterations
@@ -170,6 +173,7 @@ while True:
                 ring_tip = hand_landmarks.landmark[HandLandmark.RING_FINGER_TIP]
                 pinky_pip = hand_landmarks.landmark[HandLandmark.PINKY_PIP]
                 pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+                pinky_mcp = hand_landmarks.landmark[HandLandmark.PINKY_MCP]
 
                 # Calculate distances
                 volumeup_distance = calculate_distance(thumb_tip, index_tip)
@@ -284,11 +288,13 @@ while True:
 
                     if current_time - last_scroll_time > scroll_cool_down:
                         if (
-                            pinky_tip.y < pinky_pip.y
-                            and abs(pinky_tip.y - index_tip.y) < 0.05
+                            pinky_tip.y < pinky_pip.y and pinky_tip.y < pinky_mcp.y and pinky_tip.y > index_tip.y and
+                             abs(pinky_tip.y - index_tip.y) < 0.05
                         ):
                             print("Switching tabs")
-                            pyautogui.hotkey("ctrl", "tab")
+                            pyautogui.keyDown("ctrl")
+                            pyautogui.press("tab")
+                            pyautogui.keyUp("ctrl")
                             pyautogui.sleep(1)
                             last_switch = time()
                         elif (
@@ -298,10 +304,15 @@ while True:
                         ):
                             print("Scrolling up")
 
+
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(SCROLL_AMOUNT)
 
                             pyautogui.scroll(100)
+
+
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(SCROLL_AMOUNT)
 
                             last_scroll_time = current_time
                         elif (
@@ -309,6 +320,7 @@ while True:
                             and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
+
 
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(-SCROLL_AMOUNT)
@@ -326,6 +338,10 @@ while True:
                                 sys.exit()
 
                             pyautogui.scroll(-100)
+
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(-SCROLL_AMOUNT)
+
                             last_scroll_time = current_time
 
 
@@ -338,7 +354,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-
-
 
