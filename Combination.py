@@ -283,7 +283,7 @@ while True:
 
                     if current_time - last_scroll_time > scroll_cool_down:
                         if (
-                            pinky_tip.y < pinky_pip.y and pinky_tip.y < pinky_mcp.y and pinky_tip.y > index_tip.y and
+                            pinky_tip.y < pinky_pip.y and pinky_tip.y < pinky_mcp.y and
                              abs(pinky_tip.y - index_tip.y) < 0.05
                         ):
                             print("Switching tabs")
