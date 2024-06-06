@@ -300,16 +300,17 @@ while True:
                             and (index_pip.y - index_tip.y) * 10 > 1.05
                         ):
                             print("Scrolling up")
-
-                            pyautogui.scroll(SCROLL_ITERATIONS * SCROLL_AMOUNT)
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(SCROLL_AMOUNT)
                             last_scroll_time = current_time
+                           
                         elif (
                             index_pip.y < index_tip.y
                             and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
-
-                            pyautogui.scroll(-SCROLL_ITERATIONS * SCROLL_AMOUNT)
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(SCROLL_AMOUNT)
                             last_scroll_time = current_time
 
                         if (
