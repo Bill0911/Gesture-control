@@ -1,3 +1,4 @@
+import sys
 from time import time
 from math import hypot
 import cv2
@@ -33,8 +34,8 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 20 #Amount to scroll in each iteration
-SCROLL_ITERATIONS = 10 # Number of iterations
+SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
+SCROLL_ITERATIONS = 10  # Number of iterations
 
 
 prev_x, prev_y = 0.0, 0.0
@@ -283,8 +284,9 @@ while True:
 
                     if current_time - last_scroll_time > scroll_cool_down:
                         if (
-                            pinky_tip.y < pinky_pip.y and pinky_tip.y < pinky_mcp.y and
-                             abs(pinky_tip.y - index_tip.y) < 0.05
+                            pinky_tip.y < pinky_pip.y
+                            and pinky_tip.y < pinky_mcp.y
+                            and abs(pinky_tip.y - index_tip.y) < 0.05
                         ):
                             print("Switching tabs")
                             pyautogui.keyDown("ctrl")
@@ -298,17 +300,33 @@ while True:
                             and (index_pip.y - index_tip.y) * 10 > 1.05
                         ):
                             print("Scrolling up")
-                            for _ in range(SCROLL_ITERATIONS):
-                                pyautogui.scroll(SCROLL_AMOUNT)
+                            # for _ in range(SCROLL_ITERATIONS):
+                            #     pyautogui.scroll(SCROLL_AMOUNT)
+
+                            pyautogui.scroll(-SCROLL_ITERATIONS * SCROLL_AMOUNT)
                             last_scroll_time = current_time
                         elif (
                             index_pip.y < index_tip.y
                             and (index_pip.y - index_tip.y) * 10 < -1.25
                         ):
                             print("Scrolling down")
-                            for _ in range(SCROLL_ITERATIONS):
-                                pyautogui.scroll(-SCROLL_AMOUNT)
+                            # for _ in range(SCROLL_ITERATIONS):
+                            #     pyautogui.scroll(-SCROLL_AMOUNT)
+                            #
+                            pyautogui.scroll(SCROLL_ITERATIONS * SCROLL_AMOUNT)
                             last_scroll_time = current_time
+
+                        if (
+                            detect_thumb_near_index_mcp(hand_landmarks, height, width)[
+                                0
+                            ]
+                            > 150
+                        ):
+                            result = messagebox.askyesno(
+                                "Confirm Exit", "Do you actually want to do this?"
+                            )
+                            if result:
+                                sys.exit()
 
     # Display the image
     cv2.imshow("Image", frame)
