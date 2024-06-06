@@ -177,6 +177,9 @@ while True:
                 zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
                 zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
 
+                # turning off webcam
+                turnoff_distance = calculate_distance(thumb_tip, middle_tip)
+
                 # Left hand gestures
                 if label == "Left":
                     # Adjust volume for left hand
@@ -310,14 +313,11 @@ while True:
                         ):
                             print("Scrolling down")
                             for _ in range(SCROLL_ITERATIONS):
-                                pyautogui.scroll(SCROLL_AMOUNT)
+                                pyautogui.scroll(-SCROLL_AMOUNT)
                             last_scroll_time = current_time
 
                         if (
-                            detect_thumb_near_index_mcp(hand_landmarks, height, width)[
-                                0
-                            ]
-                            > 150
+                            turnoff_distance < 0.05
                         ):
                             result = messagebox.askyesno(
                                 "Confirm Exit", "Do you actually want to do this?"
