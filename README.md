@@ -7,7 +7,7 @@ Updated version of Gesture Control
 #Righthand
 * Scroll up-down: raise the index finger to scroll up, lower the index finger to scroll down.
 * Switch tab: raise both the index and pinky finger to switch tabs.
-* Turn off webcam: use the middle finger tip to touch the thumb tip as a circle to turn off.  
+* Turn off webcam: use the pinky finger tip to touch the thumb tip as a circle to turn off.  
 * Moving and clicking, dragging.
   ### Daily tip:
 One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent as it’s being relaxed. 
