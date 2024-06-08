@@ -178,7 +178,7 @@ while True:
                 zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # turning off webcam
-                turnoff_distance = calculate_distance(thumb_tip, middle_tip)
+                turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # Left hand gestures
                 if label == "Left":
