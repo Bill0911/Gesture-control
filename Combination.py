@@ -169,6 +169,7 @@ def capture_and_process():
 
                     # right hand
                     turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
+                    page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
 
                     print(zoom_up_distance, zoom_down_distance)
 
@@ -272,6 +273,10 @@ def capture_and_process():
                                 middle_tip.y - index_tip.y
                             ) * 10 < -1.25:
                                 pyautogui.scroll(-100)
+                                last_scroll_time = current_time
+
+                            elif page_refresh_distance < 0.05:
+                                pyautogui.hotkey("ctrl", "r")
                                 last_scroll_time = current_time
 
                             if turnoff_distance < 0.05:
