@@ -37,7 +37,6 @@ SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
 SCROLL_ITERATIONS = 10  # Number of iterations
 
-
 prev_x, prev_y = 0.0, 0.0
 last_scroll_time = time()
 scroll_cool_down = 1
@@ -193,6 +192,22 @@ while True:
                         pyautogui.hotkey("ctrl", "+")
                     if zoom_down_distance < 0.05:
                         pyautogui.hotkey("ctrl", "-")
+
+                    # Arrow keys based on index tip position
+                    index_tip_x = int(index_tip.x * width)
+                    index_tip_y = int(index_tip.y * height)
+
+                    #only if left index tip is close to middlefinger tip
+                    if detect_two_fingers_up(hand_landmarks):
+                        if index_tip_x < width * 0.3:
+                            pyautogui.keyDown("left")
+                        if index_tip_x > width * 0.7:
+                            pyautogui.keyDown("right")
+                        if index_tip_y > height * 0.7:
+                            pyautogui.keyDown("down")
+                        if index_tip_y < height * 0.5:
+                            pyautogui.keyDown("up")
+
                 # Initialize previous positions and times
                 prev_x, prev_y = 0, 0
                 prev_prev_x, prev_prev_y = 0, 0
@@ -306,7 +321,7 @@ while True:
                             for _ in range(SCROLL_ITERATIONS):
                                 pyautogui.scroll(SCROLL_AMOUNT)
                             last_scroll_time = current_time
-                           
+
                         elif (
                             index_pip.y < index_tip.y
                             and (index_pip.y - index_tip.y) * 10 < -1.25
