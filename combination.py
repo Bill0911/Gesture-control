@@ -28,6 +28,9 @@ ROI_RIGHT = 0.8  # Right 80% of the frame width
 prev_x, prev_y = 0, 0
 smooth_factor = 0.8
 
+# Dragging state
+is_dragging = False
+
 def detect_two_fingers_up(hand_landmarks):
     # Check if index and middle fingers are up
     index_tip = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP]
@@ -106,10 +109,15 @@ while cap.isOpened():
                 cv2.circle(image, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1)
                 cv2.circle(image, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
                 
-                # Click action when thumb is near index finger MCP
+                # Click and drag functionality
                 if distance < 40:
-                    pyautogui.click()
-                    pyautogui.sleep(0.1)
+                    if not is_dragging:
+                        pyautogui.mouseDown()
+                        is_dragging = True
+                else:
+                    if is_dragging:
+                        pyautogui.mouseUp()
+                        is_dragging = False
 
     # Display the frame
     cv2.imshow('Hand Tracking', image)
