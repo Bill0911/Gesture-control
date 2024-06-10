@@ -1,3 +1,4 @@
+import sys
 from time import time, sleep
 from math import hypot
 import cv2
@@ -157,12 +158,19 @@ def capture_and_process():
                     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
                     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
                     middle_tip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_TIP]
+                    ring_tip = hand_landmarks.landmark[HandLandmark.RING_FINGER_TIP]
                     pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
 
+                    # left hand
                     volumeup_distance = calculate_distance(thumb_tip, index_tip)
                     volumedown_distance = calculate_distance(thumb_tip, middle_tip)
-                    zoom_up_distance = calculate_distance(thumb_tip, pinky_tip)
+                    zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
                     zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
+
+                    # right hand
+                    turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
+
+                    print(zoom_up_distance, zoom_down_distance)
 
                     if label == "Left":
                         if volumeup_distance < 0.05:
@@ -175,7 +183,6 @@ def capture_and_process():
                             pyautogui.hotkey("ctrl", "-")
 
                     prev_x, prev_y = 0, 0
-                    prev_prev_x, prev_prev_y = 0, 0
                     prev_time, prev_prev_time = 0, 0
 
                     if label == "Right":
@@ -214,7 +221,6 @@ def capture_and_process():
 
                                 pyautogui.moveTo(future_x, future_y)
 
-                            prev_prev_x, prev_prev_y = prev_x, prev_y
                             prev_x, prev_y = screen_x, screen_y
                             prev_prev_time, prev_time = prev_time, int(current_time)
 
@@ -241,7 +247,7 @@ def capture_and_process():
                                 pyautogui.mouseDown()
                                 pyautogui.sleep(0.2)
                                 pyautogui.mouseUp()
-                                last_click = time()
+
                         elif mouse_control_active:
                             mouse_control_active = False
                             if mouse_is_down:
@@ -255,17 +261,25 @@ def capture_and_process():
                             ):
                                 pyautogui.hotkey("ctrl", "tab")
                                 pyautogui.sleep(1)
-                                last_switch = time()
+
                             elif (middle_tip.y > middle_tip.y) and (
                                 index_tip.y - middle_tip.y
                             ) * 10 > 1.05:
                                 pyautogui.scroll(100)
                                 last_scroll_time = current_time
+
                             elif (middle_tip.y < middle_tip.y) and (
                                 middle_tip.y - index_tip.y
                             ) * 10 < -1.25:
                                 pyautogui.scroll(-100)
                                 last_scroll_time = current_time
+
+                            if turnoff_distance < 0.05:
+                                result = messagebox.askyesno(
+                                    "Confirm Exit", "Do you actually want to do this?"
+                                )
+                                if result:
+                                    sys.exit()
 
         cv2.imshow("Image", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
