@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 from time import time
+=======
+import sys
+from time import time, sleep
+>>>>>>> 743566ee6532d7d25adf2dc32561698160fd42a9
 from math import hypot
 import cv2
 import mediapipe as mp
@@ -97,15 +102,24 @@ class KalmanFilter:
         return self.posteri_estimate
 
 
+
 # Initialize the Kalman filters
+
+
 kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
 # Starting webcam to capture
 cap = cv2.VideoCapture(0)
 
+
 while True:
     success, frame = cap.read()
+
+
+def capture_and_process():
+    global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, stop_thread
+
 
     if not success:
         break
@@ -319,3 +333,204 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
+        frame = cv2.flip(frame, 1)
+        frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        process = hands.process(frameRGB)
+
+        height, width, _ = frame.shape
+
+        top_left = (int(width * ROI_LEFT), int(height * ROI_TOP))
+        bottom_right = (int(width * ROI_RIGHT), int(height * ROI_BOTTOM))
+
+        cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
+
+        if process.multi_hand_landmarks:
+            for hand_landmarks, handedness in zip(
+                process.multi_hand_landmarks, process.multi_handedness
+            ):
+                label = handedness.classification[0].label
+
+                index_mcp = hand_landmarks.landmark[
+                    mp_hands.HandLandmark.INDEX_FINGER_MCP
+                ]
+
+                index_mcp_x = index_mcp.x
+                index_mcp_y = index_mcp.y
+
+                if frame.shape[1] and frame.shape[0]:
+                    if index_mcp_x is not None and index_mcp_y is not None:
+                        try:
+                            index_mcp_x_px = int(index_mcp_x * frame.shape[1])
+                            index_mcp_y_px = int(index_mcp_y * frame.shape[0])
+
+                            cv2.circle(
+                                frame,
+                                (index_mcp_x_px, index_mcp_y_px),
+                                10,
+                                (0, 255, 255),
+                                -1,
+                            )
+                        except cv2.error as e:
+                            print(f"OpenCV error: {e}")
+                    else:
+                        raise ValueError(f"Invalid center for circle")
+
+                draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+                if hand_landmarks:
+                    thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
+                    index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
+                    middle_tip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_TIP]
+                    ring_tip = hand_landmarks.landmark[HandLandmark.RING_FINGER_TIP]
+                    pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+
+                    # left hand
+                    volumeup_distance = calculate_distance(thumb_tip, index_tip)
+                    volumedown_distance = calculate_distance(thumb_tip, middle_tip)
+                    zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
+                    zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
+
+                    # right hand
+                    turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
+                    page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
+
+                    if label == "Left":
+                        if volumeup_distance < 0.05:
+                            pyautogui.press("volumeup")
+                        if volumedown_distance < 0.05:
+                            pyautogui.press("volumedown")
+                        if zoom_up_distance < 0.05:
+                            pyautogui.hotkey("ctrl", "+")
+                        if zoom_down_distance < 0.05:
+                            pyautogui.hotkey("ctrl", "-")
+
+                    prev_x, prev_y = 0, 0
+                    prev_time, prev_prev_time = 0, 0
+
+                    if label == "Right":
+                        current_time = time()
+                        thumb_near_index = abs(thumb_tip.y - index_tip.y) < 0.05
+
+                        if detect_two_fingers_up(hand_landmarks):
+                            mouse_control_active = True
+
+                            norm_x = (middle_tip.x - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
+                            norm_y = (middle_tip.y - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
+
+                            filtered_x = kf_x.get_estimated_measurement(norm_x)
+                            filtered_y = kf_y.get_estimated_measurement(norm_y)
+
+                            screen_x = filtered_x * SCREEN_WIDTH
+                            screen_y = filtered_y * SCREEN_HEIGHT
+
+                            norm_x = min(max(norm_x, 0), 1)
+                            norm_y = min(max(norm_y, 0), 1)
+
+                            screen_width, screen_height = pyautogui.size()
+                            screen_x = int(screen_width * norm_x)
+                            screen_y = int(screen_height * norm_y)
+
+                            if prev_time and prev_prev_time:
+                                velocity_x = (screen_x - prev_x) / (
+                                    current_time - prev_time
+                                )
+                                velocity_y = (screen_y - prev_y) / (
+                                    current_time - prev_time
+                                )
+
+                                future_x = screen_x + velocity_x * 0.2
+                                future_y = screen_y + velocity_y * 0.2
+
+                                pyautogui.moveTo(future_x, future_y)
+
+                            prev_x, prev_y = screen_x, screen_y
+                            prev_prev_time, prev_time = prev_time, int(current_time)
+
+                            pyautogui.moveTo(screen_x, screen_y)
+
+                            if thumb_near_index and not mouse_is_down:
+                                pyautogui.mouseDown()
+                                mouse_is_down = True
+                            elif not thumb_near_index and mouse_is_down:
+                                pyautogui.mouseUp()
+                                mouse_is_down = False
+
+                            distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y = (
+                                detect_thumb_near_index_mcp(
+                                    hand_landmarks, height, width
+                                )
+                            )
+                            cv2.circle(
+                                frame, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1
+                            )
+                            cv2.circle(frame, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
+
+                            if distance < 25:
+                                pyautogui.mouseDown()
+                                pyautogui.sleep(0.2)
+                                pyautogui.mouseUp()
+
+                        elif mouse_control_active:
+                            mouse_control_active = False
+                            if mouse_is_down:
+                                pyautogui.mouseUp()
+                                mouse_is_down = False
+
+                        if current_time - last_scroll_time > scroll_cool_down:
+                            if (
+                                pinky_tip.y < middle_tip.y
+                                and abs(pinky_tip.y - index_tip.y) < 0.05
+                            ):
+                                pyautogui.hotkey("ctrl", "tab")
+                                pyautogui.sleep(1)
+
+                            elif (middle_tip.y > middle_tip.y) and (
+                                index_tip.y - middle_tip.y
+                            ) * 10 > 1.05:
+                                pyautogui.scroll(100)
+                                last_scroll_time = current_time
+
+                            elif (middle_tip.y < middle_tip.y) and (
+                                middle_tip.y - index_tip.y
+                            ) * 10 < -1.25:
+                                pyautogui.scroll(-100)
+                                last_scroll_time = current_time
+
+                            elif (
+                                page_refresh_distance < 0.05
+                                and not mouse_control_active
+                            ):
+                                pyautogui.hotkey("ctrl", "r")
+                                last_scroll_time = current_time
+
+                            if turnoff_distance < 0.05:
+                                result = messagebox.askyesno(
+                                    "Confirm Exit", "Do you actually want to do this?"
+                                )
+                                if result:
+                                    sys.exit()
+
+        cv2.imshow("Image", frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            result = messagebox.askyesno(
+                "Confirm Exit", "Do you actually want to do this?"
+            )
+            if result:
+                stop_thread = True
+                break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+# Create and start the capture thread
+capture_thread = threading.Thread(target=capture_and_process)
+capture_thread.start()
+
+# Main thread can handle other tasks or UI interactions here
+
+# Wait for the capture thread to finish before exiting the script
+capture_thread.join()
+
