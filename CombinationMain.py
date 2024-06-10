@@ -1,240 +1,359 @@
-[33mcommit 07809ed3bd961dc71792bc02cd1867e2c7c84f2a[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
-Merge: 15b313c ae50b20
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Mon Jun 10 21:42:34 2024 +0200
-
-    Merge branch 'main' of github.com:Bill0911/Gesture-control
-
-[33mcommit ae50b2065a62483df5ddeb1399a25a9a65f94a2b[m
-Merge: 743566e 8970209
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Mon Jun 10 18:17:33 2024 +0200
-
-    Merge pull request #2 from Bill0911/test-model
-    
-    Test model
-
-[33mcommit 897020918f772562a4a6ac09cf8cd73cfeabf5d3[m[33m ([m[1;31morigin/test-model[m[33m, [m[1;32mtest-model[m[33m)[m
-Merge: 2af939a 095714e
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Mon Jun 10 17:06:12 2024 +0200
-
-    Merge branch 'test-model' of github.com:Bill0911/Gesture-control into test-model
-
-[33mcommit 095714edc4c4ff70e59f972bc6cdaf228cb10c57[m
-Author: Tissa <thijs.thiery@student.nhlstenden.com>
-Date:   Mon Jun 10 17:03:25 2024 +0200
-
-    Pacman arrow input
-    
-    you can now make directional arrow inputs using your left index and middle finger based on their coordinates
-
-[33mcommit 15b313c7e9785c4717661d51e4982f0fb787ab4f[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Mon Jun 10 16:49:02 2024 +0200
-
-    Resolving conflict
-
-[33mcommit 85b0c0b202a2526e332be2ffb7f6ab2f33a41095[m
-Merge: 5026cf5 743566e
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Mon Jun 10 16:36:35 2024 +0200
-
-    Resolved merge conflict in Combination.py
-
-[33mcommit 2af939a619ed117e538b3cb47d3f12ddd7938167[m
-Merge: 1bbe983 743566e
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Mon Jun 10 16:31:03 2024 +0200
-
-    fixed conflict
-
-[33mcommit 743566ee6532d7d25adf2dc32561698160fd42a9[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Mon Jun 10 03:22:30 2024 +0200
-
-    add notes to Readme file
-
-[33mcommit ee619c90fb9963946df6e1690bbee9aebe59377e[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Mon Jun 10 03:16:34 2024 +0200
-
-    add page refresh gesture
-
-[33mcommit 56703ee83377151ad8b1c28855e7d78adc4297cb[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Mon Jun 10 03:13:07 2024 +0200
-
-    fix for left hand gestures
-
-[33mcommit 24a65ca249f89583eccdeaa309daa78ab353a739[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Mon Jun 10 02:52:34 2024 +0200
-
-    formatting
-
-[33mcommit 01e99e75fe6f56f782377b65f64e1f7887e5b24d[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Sat Jun 8 09:39:56 2024 +0200
-
-    Update README.md
-
-[33mcommit 1bbe9831b994cc3777693ec07dbaacf5581e443f[m
-Merge: 3346e57 955e4e0
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Sat Jun 8 09:38:36 2024 +0200
-
-    Merge branch 'test-model' of github.com:Bill0911/Gesture-control into test-model
-
-[33mcommit 3346e577b94a0c634f0f178721c5542147d86d3e[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Sat Jun 8 09:36:23 2024 +0200
-
-    Fixed turning off the webcam by using pinky to touch thumb (before using middle finger to touch thumb)
-
-[33mcommit 955e4e00c2e4e9e5608e76f0134bb0dafbdd431b[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Fri Jun 7 20:19:39 2024 +0200
-
-    Update README.md
-
-[33mcommit 07282a4a6a2aa79e4e2da8820ffbe07790cf9069[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Thu Jun 6 16:37:25 2024 +0200
-
-    Update README.md
-
-[33mcommit 691edf1ba588534b9754e9819b60f547cacf639c[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Thu Jun 6 16:34:06 2024 +0200
-
-    updated gesture of turning off the webcam
-
-[33mcommit 76b116b4df47aa293d0aae90c4806f5e204d96f1[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Thu Jun 6 13:55:41 2024 +0200
-
-    Fixed scroll up-down and added gesture of turning off the webcam
-
-[33mcommit 4759c4ddd22867985aeb3ea8880a8c3a49205324[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Thu Jun 6 12:10:30 2024 +0200
-
-    make quiting and improve scrolling
-
-[33mcommit c5e022c4c9d7bf150e58834b0818c17d66f73e61[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Thu Jun 6 12:01:40 2024 +0200
-
-    testing quiting
-
-[33mcommit dfa824bceaccfbcd63af20490391968d09a24397[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Wed Jun 5 21:51:35 2024 +0200
-
-    Fixed scroll up-down & switch tabs
-
-[33mcommit 64babcedf7a008b69fb62a82c2a67507a41b7ed7[m
-Author: Timofei Gerasimov <timofei.gerasimov@student.nhlstenden.com>
-Date:   Mon Jun 3 15:56:23 2024 +0200
-
-    implemented threading
-    
-    Key Changes:
-    - **Threading Initialization:**
-      - Added `import threading`.
-      - Created `capture_and_process` function to handle video capture and processing.
-      - Moved the video capture and processing loop into the `capture_and_process` function.
-      - Added `stop_thread` flag to safely terminate the thread.
-    
-    - **Thread Management:**
-      - Created and started the capture thread using `threading.Thread`.
-      - Ensured the main thread waits for the capture thread to finish using `capture_thread.join()`.
-
-[33mcommit b185fb0f73ddaccd3be5d8f9f0cb62ee43c70043[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Wed Jun 5 17:10:46 2024 +0200
-
-    Fixed scroll down and switch tab issues
-
-[33mcommit 809ed6fdeb9c969852b2a2ae009568870881294d[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Sun Jun 2 11:22:14 2024 +0200
-
-    Update README.md
-
-[33mcommit 56c1e6f119eb31ae86f3ebb4248a556d52965814[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Sun Jun 2 09:43:50 2024 +0200
-
-    Update README.md
-
-[33mcommit c6db34c7d84822bd1ccd108a5dc258345dcb62d4[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Sun Jun 2 09:13:18 2024 +0200
-
-    Update README.md
-
-[33mcommit 45327330d48a3562ac2c891f96b9091282b05c59[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Sat Jun 1 22:14:51 2024 +0200
-
-    Improved the jittery cursor by improving Kalman filter
-
-[33mcommit c41554119cfaa55448bf4cf73c42522b6f7aee78[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Sat Jun 1 22:09:32 2024 +0200
-
-    Update README.md
-
-[33mcommit a10f062d6c604e002e65f355afe763465e64e209[m
-Author: Khoi Nguyen Do (Bill) <144027334+Bill0911@users.noreply.github.com>
-Date:   Thu May 30 10:19:57 2024 +0200
-
-    Update README.md
-
-[33mcommit 3497c2d6e938df7e1f6e3463442a7fc9ee8b1f90[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Sun May 26 15:11:05 2024 +0200
-
-    Add Demo.py from test-model branch
-
-[33mcommit 5026cf5f6984bc6ce8251da515f1711049307c58[m
-Merge: 45ada8d 6469197
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Wed Jun 5 21:22:00 2024 +0200
-
-    Resolved merge conflict in Combination.py
-
-[33mcommit e2476dde94ebe5bfe76cddb474eaa2795b52f3da[m
-Author: 0Empty0 <garg.victor11@gmail.com>
-Date:   Wed Jun 5 20:08:11 2024 +0200
-
-    add app closing gesture
-
-[33mcommit 45ada8d485a0df78438d2c97af2b0a85815ddd47[m
-Author: Nguyendo1234 <do.do@student.nhlstenden.com>
-Date:   Wed Jun 5 17:10:46 2024 +0200
-
-    Fixed scroll down and switch tab issues
-
-[33mcommit 64691979926e23002b1411eacb17b1420f2f4f8f[m
-Author: Timofei Gerasimov <timofei.gerasimov@student.nhlstenden.com>
-Date:   Mon Jun 3 15:56:23 2024 +0200
-
-    implemented threading
-    
-    Key Changes:
-    - **Threading Initialization:**
-      - Added `import threading`.
-      - Created `capture_and_process` function to handle video capture and processing.
-      - Moved the video capture and processing loop into the `capture_and_process` function.
-      - Added `stop_thread` flag to safely terminate the thread.
-    
-    - **Thread Management:**
-      - Created and started the capture thread using `threading.Thread`.
-      - Ensured the main thread waits for the capture thread to finish using `capture_thread.join()`.
-
-[33mcommit d7cc7222af248000c21ee283cb4799f5db7042da[m
-Merge: e118a9e 533cbda
-Author: N
+from time import time
+from math import hypot
+import cv2
+import mediapipe as mp
+from mediapipe.python.solutions.hands import HandLandmark
+import numpy as np
+import pyautogui
+from tkinter import messagebox
+import tkinter as tk
+import tkinter.messagebox as messagebox
+import threading
+
+pyautogui.FAILSAFE = False
+
+# Creating the hand recognizer model
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(
+    static_image_mode=False,
+    model_complexity=1,
+    min_detection_confidence=0.75,
+    min_tracking_confidence=0.75,
+    max_num_hands=2,
+)
+
+draw = mp.solutions.drawing_utils
+
+# Define region of interest (ROI) within the webcam frame
+ROI_TOP = 0.2  # Top 20% of the frame height
+ROI_BOTTOM = 0.8  # Bottom 80% of the frame height
+ROI_LEFT = 0.2  # Left 20% of the frame width
+ROI_RIGHT = 0.8  # Right 80% of the frame width
+
+# Smoothing parameters
+SMOTH_FACTOR = 0.8
+
+# Get screen size
+SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
+
+SCROLL_AMOUNT = 20  # Amount to scroll in each iteration
+SCROLL_ITERATIONS = 10  # Number of iterations
+
+
+prev_x, prev_y = 0.0, 0.0
+last_scroll_time = time()
+scroll_cool_down = 1
+min_scroll_distance = 20
+mouse_control_active = False
+mouse_is_down = False
+exit_program = False
+exit_thread_started = False
+messagebox_shown = False
+
+
+def calculate_distance(point1, point2):
+    return hypot(point2.x - point1.x, point2.y - point1.y)
+
+
+def detect_two_fingers_up(hand_landmarks):
+    # Check if index and middle fingers are up
+    index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
+    index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
+    middle_tip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_TIP]
+    middle_mcp = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_MCP]
+
+    return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
+
+
+def detect_thumb_near_index_mcp(hand_landmarks, height, width):
+    # Calculate the distance between thumb tip and index finger MCP
+    index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
+    thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
+
+    index_mcp_x = int(index_mcp.x * width)
+    index_mcp_y = int(index_mcp.y * height)
+    thumb_x = int(thumb_tip.x * width)
+    thumb_y = int(thumb_tip.y * height)
+
+    distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
+    return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
+
+def confirm_exit():
+    global exit_program
+    global messagebox_shown
+    if messagebox_shown: # if the message is already shown, do not pop up another time
+        return
+    messagebox_shown = True
+    root = tk.Tk()
+    root.withdraw() #Hide the root window 
+    #Move it to the central screen
+    window_width = root.winfo_reqwidth()
+    window_height = root.winfo_reqheight()
+    position_right = int(root.winfo_screenwidth()/2 - window_width/2)
+    position_down = int(root.winfo_screenheight()/2 - window_height/2)
+    root.geometry("+{}+{}".format(position_right, position_down))
+    result = messagebox.askyesno("Confirm Exit", "Do you actually want turn it off ?", parent=root)
+    if result:
+        exit_program = True
+    messagebox_shown = False #Reset the flag after the notification is closed
+    root.destroy()
+
+
+class KalmanFilter:
+    # Kalman filter is an algorithm that predicts a parameter of interests
+    # such as location, speed, and direction in the presence of noise and measurements
+    def __init__(self, process_variance, estimated_measurement_variance):
+        self.process_variance = process_variance
+        self.estimated_measurement_variance = estimated_measurement_variance
+        self.posteri_estimate = 0.0
+        self.posteri_error_estimate = 1.0
+
+    def get_estimated_measurement(self, measurement):
+        priori_estimate = self.posteri_estimate
+        priori_error_estimate = self.posteri_error_estimate + self.process_variance
+
+        blending_factor = priori_error_estimate / (
+            priori_error_estimate + self.estimated_measurement_variance
+        )
+        self.posteri_estimate = priori_estimate + blending_factor * (
+            measurement - priori_estimate
+        )
+        self.posteri_error_estimate = (1 - blending_factor) * priori_error_estimate
+
+        return self.posteri_estimate
+
+
+# Initialize the Kalman filters
+kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
+kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
+
+# Starting webcam to capture
+cap = cv2.VideoCapture(0)
+
+while True:
+    if exit_program:
+        break
+    success, frame = cap.read()
+
+    if not success:
+        break
+
+    frame = cv2.flip(frame, 1)
+    frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    process = hands.process(frameRGB)
+
+    height, width, _ = frame.shape
+
+    top_left = (int(width * ROI_LEFT), int(height * ROI_TOP))
+    bottom_right = (int(width * ROI_RIGHT), int(height * ROI_BOTTOM))
+
+    # Draw ROI rectangle
+    cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
+
+    if process.multi_hand_landmarks:
+        for hand_landmarks, handedness in zip(
+            process.multi_hand_landmarks, process.multi_handedness
+        ):
+            label = handedness.classification[0].label
+
+            # Get the index finger MCP joint
+            index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
+
+            # Get the x and y coordinates of the index finger MCP joint
+            index_mcp_x = index_mcp.x
+            index_mcp_y = index_mcp.y
+
+            if frame.shape[1] and frame.shape[0]:
+                if index_mcp_x is not None and index_mcp_y is not None:
+                    try:
+                        index_mcp_x_px = int(index_mcp_x * frame.shape[1])
+                        index_mcp_y_px = int(index_mcp_y * frame.shape[0])
+
+                        cv2.circle(
+                            frame,
+                            (index_mcp_x_px, index_mcp_y_px),
+                            10,
+                            (0, 255, 255),
+                            -1,
+                        )
+                    except cv2.error as e:
+                        print(f"OpenCV error: {e}")
+                else:
+                    raise ValueError(f"Invalid center for circle")
+
+            draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+            if hand_landmarks:
+                thumb_base = hand_landmarks.landmark[HandLandmark.THUMB_MCP]
+                thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
+                index_pip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_PIP]
+                index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
+                middle_mcp = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_MCP]
+                middle_pip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_PIP]
+                middle_tip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_TIP]
+                ring_pip = hand_landmarks.landmark[HandLandmark.RING_FINGER_PIP]
+                ring_tip = hand_landmarks.landmark[HandLandmark.RING_FINGER_TIP]
+                pinky_pip = hand_landmarks.landmark[HandLandmark.PINKY_PIP]
+                pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+                pinky_mcp = hand_landmarks.landmark[HandLandmark.PINKY_MCP]
+
+                # Calculate distances
+                volumeup_distance = calculate_distance(thumb_tip, index_tip)
+                volumedown_distance = calculate_distance(thumb_tip, middle_tip)
+                zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
+                zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
+
+                # turning off webcam
+                turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
+
+                # Left hand gestures
+                if label == "Left":
+                    # Adjust volume for left hand
+                    if volumeup_distance < 0.05:
+                        pyautogui.press("volumeup")
+                    if volumedown_distance < 0.05:
+                        pyautogui.press("volumedown")
+
+                    # Adjust zoom for left hand
+                    if zoom_up_distance < 0.05:
+                        pyautogui.hotkey("ctrl", "+")
+                    if zoom_down_distance < 0.05:
+                        pyautogui.hotkey("ctrl", "-")
+                # Initialize previous positions and times
+                prev_x, prev_y = 0, 0
+                prev_prev_x, prev_prev_y = 0, 0
+                prev_time, prev_prev_time = 0, 0
+
+                # Right hand gestures
+                if label == "Right":
+                    current_time = time()
+                    thumb_near_index = abs(thumb_tip.y - index_tip.y) < 0.05
+
+                    if detect_two_fingers_up(hand_landmarks):
+                        print("mouse control active")
+                        mouse_control_active = True
+                        # Normalize the coordinates within the frame
+                        norm_x = (middle_tip.x - ROI_LEFT) / (ROI_RIGHT - ROI_LEFT)
+                        norm_y = (middle_tip.y - ROI_TOP) / (ROI_BOTTOM - ROI_TOP)
+
+                        # Filter the positions
+                        filtered_x = kf_x.get_estimated_measurement(norm_x)
+                        filtered_y = kf_y.get_estimated_measurement(norm_y)
+
+                        # Use the filtered positions for mouse control
+                        screen_x = filtered_x * SCREEN_WIDTH
+                        screen_y = filtered_y * SCREEN_HEIGHT
+
+                        # Clamp normalized coordinates to [0, 1] range
+                        norm_x = min(max(norm_x, 0), 1)
+                        norm_y = min(max(norm_y, 0), 1)
+
+                        # Convert normalized coordinates to screen coordinates
+                        screen_width, screen_height = pyautogui.size()
+                        screen_x = int(screen_width * norm_x)
+                        screen_y = int(screen_height * norm_y)
+
+                        # Calculate velocities
+                        if prev_time and prev_prev_time:
+                            velocity_x = (screen_x - prev_x) / (
+                                current_time - prev_time
+                            )
+                            velocity_y = (screen_y - prev_y) / (
+                                current_time - prev_time
+                            )
+
+                            # predict future positions
+                            future_x = screen_x + velocity_x * 0.2
+                            future_y = screen_y + velocity_y * 0.2
+
+                            # move the cursor to the predicted position
+                            pyautogui.moveTo(future_x, future_y)
+
+                        # Update previous positions and times
+                        prev_prev_x, prev_prev_y = prev_x, prev_y
+                        prev_x, prev_y = screen_x, screen_y
+                        prev_prev_time, prev_time = prev_time, int(current_time)
+
+                        # Move the mouse
+                        pyautogui.moveTo(screen_x, screen_y)
+
+                        # Click when thumb is near index and only thumb, index, and middle fingers are raised
+                        if thumb_near_index and not mouse_is_down:
+                            print("mouse down")
+                            pyautogui.mouseDown()
+                            mouse_is_down = True
+                        elif not thumb_near_index and mouse_is_down:
+                            print("mouse up")
+                            pyautogui.mouseUp()
+                            mouse_is_down = False
+
+                        # Draw circles on thumb and index finger MCP for visual feedback
+                        distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y = (
+                            detect_thumb_near_index_mcp(hand_landmarks, height, width)
+                        )
+                        cv2.circle(
+                            frame, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1
+                        )
+                        cv2.circle(frame, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
+
+                        # Click action when thumb is near index finger MCP
+                        if distance < 25:
+                            print("mouse click")
+                            pyautogui.mouseDown()
+                            pyautogui.sleep(0.2)
+                            pyautogui.mouseUp()
+                            last_click = time()
+                    elif mouse_control_active:
+                        print("mouse control deactivated")
+                        mouse_control_active = False
+                        if mouse_is_down:
+                            print("mouse up")
+                            pyautogui.mouseUp()
+                            mouse_is_down = False
+
+                    if current_time - last_scroll_time > scroll_cool_down:
+                        if (
+                            pinky_tip.y < pinky_pip.y
+                            and pinky_tip.y < pinky_mcp.y
+                            and abs(pinky_tip.y - index_tip.y) < 0.05
+                        ):
+                            print("Switching tabs")
+                            pyautogui.keyDown("ctrl")
+                            pyautogui.press("tab")
+                            pyautogui.keyUp("ctrl")
+                            pyautogui.sleep(1)
+                            last_switch = time()
+                        elif (
+                            index_pip.y > index_tip.y
+                            and middle_tip.y > middle_mcp.y
+                            and (index_pip.y - index_tip.y) * 10 > 1.05
+                        ):
+                            print("Scrolling up")
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(SCROLL_AMOUNT)
+                            last_scroll_time = current_time
+                           
+                        elif (
+                            index_pip.y < index_tip.y
+                            and (index_pip.y - index_tip.y) * 10 < -1.25
+                        ):
+                            print("Scrolling down")
+                            for _ in range(SCROLL_ITERATIONS):
+                                pyautogui.scroll(-SCROLL_AMOUNT)
+                            last_scroll_time = current_time
+
+                        if (
+                            turnoff_distance < 0.05 or 
+                            cv2.waitKey(1) & 0xFF == ord("q") and 
+                            not exit_thread_started
+                        ):
+                            exit_thread = threading.Thread(target=confirm_exit)
+                            exit_thread.start()
+                            exit_thread_started = True
+
+    # Display the image
+    cv2.imshow("Image", frame)
+
+cap.release()
+cv2.destroyAllWindows()
