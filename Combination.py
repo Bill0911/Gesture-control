@@ -41,8 +41,10 @@ min_scroll_distance = 20
 mouse_control_active = False
 mouse_is_down = False
 
+
 def calculate_distance(point1, point2):
     return hypot(point2.x - point1.x, point2.y - point1.y)
+
 
 def detect_two_fingers_up(hand_landmarks):
     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
@@ -51,6 +53,7 @@ def detect_two_fingers_up(hand_landmarks):
     middle_mcp = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_MCP]
 
     return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
+
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
@@ -63,6 +66,7 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
 
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
+
 
 class KalmanFilter:
     def __init__(self, process_variance, estimated_measurement_variance):
@@ -85,11 +89,13 @@ class KalmanFilter:
 
         return self.posteri_estimate
 
+
 kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
 # Flag to stop the capture thread
 stop_thread = False
+
 
 def capture_and_process():
     global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, stop_thread
@@ -115,10 +121,14 @@ def capture_and_process():
         cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
 
         if process.multi_hand_landmarks:
-            for hand_landmarks, handedness in zip(process.multi_hand_landmarks, process.multi_handedness):
+            for hand_landmarks, handedness in zip(
+                process.multi_hand_landmarks, process.multi_handedness
+            ):
                 label = handedness.classification[0].label
 
-                index_mcp = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP]
+                index_mcp = hand_landmarks.landmark[
+                    mp_hands.HandLandmark.INDEX_FINGER_MCP
+                ]
 
                 index_mcp_x = index_mcp.x
                 index_mcp_y = index_mcp.y
@@ -192,8 +202,12 @@ def capture_and_process():
                             screen_y = int(screen_height * norm_y)
 
                             if prev_time and prev_prev_time:
-                                velocity_x = (screen_x - prev_x) / (current_time - prev_time)
-                                velocity_y = (screen_y - prev_y) / (current_time - prev_time)
+                                velocity_x = (screen_x - prev_x) / (
+                                    current_time - prev_time
+                                )
+                                velocity_y = (screen_y - prev_y) / (
+                                    current_time - prev_time
+                                )
 
                                 future_x = screen_x + velocity_x * 0.2
                                 future_y = screen_y + velocity_y * 0.2
@@ -214,9 +228,13 @@ def capture_and_process():
                                 mouse_is_down = False
 
                             distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y = (
-                                detect_thumb_near_index_mcp(hand_landmarks, height, width)
+                                detect_thumb_near_index_mcp(
+                                    hand_landmarks, height, width
+                                )
                             )
-                            cv2.circle(frame, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1)
+                            cv2.circle(
+                                frame, (index_mcp_x, index_mcp_y), 10, (0, 255, 255), -1
+                            )
                             cv2.circle(frame, (thumb_x, thumb_y), 10, (0, 255, 255), -1)
 
                             if distance < 25:
@@ -231,26 +249,36 @@ def capture_and_process():
                                 mouse_is_down = False
 
                         if current_time - last_scroll_time > scroll_cool_down:
-                            if pinky_tip.y < middle_tip.y and abs(pinky_tip.y - index_tip.y) < 0.05:
+                            if (
+                                pinky_tip.y < middle_tip.y
+                                and abs(pinky_tip.y - index_tip.y) < 0.05
+                            ):
                                 pyautogui.hotkey("ctrl", "tab")
                                 pyautogui.sleep(1)
                                 last_switch = time()
-                            elif (middle_tip.y > middle_tip.y) and (index_tip.y - middle_tip.y) * 10 > 1.05:
+                            elif (middle_tip.y > middle_tip.y) and (
+                                index_tip.y - middle_tip.y
+                            ) * 10 > 1.05:
                                 pyautogui.scroll(100)
                                 last_scroll_time = current_time
-                            elif (middle_tip.y < middle_tip.y) and (middle_tip.y - index_tip.y) * 10 < -1.25:
+                            elif (middle_tip.y < middle_tip.y) and (
+                                middle_tip.y - index_tip.y
+                            ) * 10 < -1.25:
                                 pyautogui.scroll(-100)
                                 last_scroll_time = current_time
 
         cv2.imshow("Image", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
-            result = messagebox.askyesno("Confirm Exit", "Do you actually want to do this?")
+            result = messagebox.askyesno(
+                "Confirm Exit", "Do you actually want to do this?"
+            )
             if result:
                 stop_thread = True
                 break
 
     cap.release()
     cv2.destroyAllWindows()
+
 
 # Create and start the capture thread
 capture_thread = threading.Thread(target=capture_and_process)
