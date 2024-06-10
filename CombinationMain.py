@@ -1,5 +1,5 @@
 import sys
-from time import time
+from time import time, sleep
 from math import hypot
 import cv2
 import mediapipe as mp
@@ -7,6 +7,7 @@ from mediapipe.python.solutions.hands import HandLandmark
 import numpy as np
 import pyautogui
 from tkinter import messagebox
+import threading
 
 pyautogui.FAILSAFE = False
 
