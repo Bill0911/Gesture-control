@@ -171,8 +171,6 @@ def capture_and_process():
                     turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
                     page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
 
-                    print(zoom_up_distance, zoom_down_distance)
-
                     if label == "Left":
                         if volumeup_distance < 0.05:
                             pyautogui.press("volumeup")
@@ -275,7 +273,10 @@ def capture_and_process():
                                 pyautogui.scroll(-100)
                                 last_scroll_time = current_time
 
-                            elif page_refresh_distance < 0.05:
+                            elif (
+                                page_refresh_distance < 0.05
+                                and not mouse_control_active
+                            ):
                                 pyautogui.hotkey("ctrl", "r")
                                 last_scroll_time = current_time
 
