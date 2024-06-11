@@ -73,6 +73,18 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
+prev_hand_x = 0
+
+prev_hand_x = 0
+
+def detect_left_swipe(hand_landmarks):
+    global prev_hand_x
+    hand_x = sum(landmark.x for landmark in hand_landmarks.landmark) / len(hand_landmarks.landmark)
+    if prev_hand_x - hand_x > 0.01:  # adjust the threshold as needed
+        prev_hand_x = hand_x
+        return True
+    prev_hand_x = hand_x
+    return False
 
 def confirm_exit():
     global exit_program
@@ -194,6 +206,9 @@ def main():
                     page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
 
                     if label == "Left":
+                        if detect_left_swipe(hand_landmarks):
+                            pyautogui.hotkey("ctrl", "z")
+                            print("undo")
                         if volumeup_distance < 0.05:
                             pyautogui.press("volumeup")
                         if volumedown_distance < 0.05:
