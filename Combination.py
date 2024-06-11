@@ -35,7 +35,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 30 
+SCROLL_AMOUNT = 20
 SCROLL_ITERATIONS = 10
 
 prev_x, prev_y = 0.0, 0.0
@@ -49,10 +49,32 @@ exit_thread = None
 
 
 def calculate_distance(point1, point2):
+    """
+        Calculate the Euclidean distance between two points.
+
+        Args:
+        point1 (object): The first point.
+        point2 (object): The second point.
+
+        Returns:
+        float: The Euclidean distance between the two points.
+    """
     return hypot(point2.x - point1.x, point2.y - point1.y)
 
 
 def detect_two_fingers_up(hand_landmarks):
+    """
+        Detects if the index and middle fingers are raised.
+
+        This function checks if the y-coordinate of the tip of the index and middle fingers is less than the y-coordinate of the MCP joint of the same fingers.
+        If so, it means that the fingers are raised (assuming the hand is approximately vertical).
+
+        Args:
+        hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
+
+        Returns:
+        bool: True if the index and middle fingers are raised, False otherwise.
+    """
     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
     index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
     middle_tip = hand_landmarks.landmark[HandLandmark.MIDDLE_FINGER_TIP]
@@ -62,6 +84,21 @@ def detect_two_fingers_up(hand_landmarks):
 
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
+    """
+        Detects if the thumb is near the MCP joint of the index finger.
+
+        This function calculates the pixel coordinates of the thumb tip and the MCP joint of the index finger.
+        It then calculates the Euclidean distance between these two points.
+
+        Args:
+        hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
+        height (int): The height of the frame.
+        width (int): The width of the frame.
+
+        Returns:
+        tuple: A tuple containing the distance between the thumb tip and the MCP joint of the index finger,
+               the x and y coordinates of the MCP joint of the index finger, and the x and y coordinates of the thumb tip.
+    """
     index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
 
@@ -73,8 +110,16 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
-
 def confirm_exit():
+    """
+        Confirm the exit of the program.
+
+        This function prompts the user with a message box asking if they want to exit the program.
+        If the user confirms, it sets the global variable 'exit_program' to True, signaling the program to terminate.
+
+        Returns:
+        None
+    """
     global exit_program
 
     result = messagebox.askyesno("Confirm Exit", "Do you actually want turn it off ?")
@@ -85,13 +130,43 @@ def confirm_exit():
 
 
 class KalmanFilter:
+    """
+    Implements a one-dimensional Kalman filter.
+
+    A Kalman filter is an algorithm that uses a series of measurements observed over time,
+    containing statistical noise and other inaccuracies, and produces estimates of unknown variables
+    that tend to be more accurate than those based on a single measurement alone.
+
+    Attributes:
+    process_variance (float): The variance in the process model.
+    estimated_measurement_variance (float): The estimated variance of the measurements.
+    posteri_estimate (float): The posteriori state estimate.
+    posteri_error_estimate (float): The posteriori estimate of the error covariance.
+    """
+
     def __init__(self, process_variance, estimated_measurement_variance):
+        """
+        Initializes the KalmanFilter class with process variance and estimated measurement variance.
+
+        Args:
+        process_variance (float): The variance in the process model.
+        estimated_measurement_variance (float): The estimated variance of the measurements.
+        """
         self.process_variance = process_variance
         self.estimated_measurement_variance = estimated_measurement_variance
         self.posteri_estimate = 0.0
         self.posteri_error_estimate = 1.0
 
     def get_estimated_measurement(self, measurement):
+        """
+        Updates and returns the Kalman Filter's state estimate from the given measurement.
+
+        Args:
+        measurement (float): The current measurement.
+
+        Returns:
+        float: The updated state estimate.
+        """
         priori_estimate = self.posteri_estimate
         priori_error_estimate = self.posteri_error_estimate + self.process_variance
 
@@ -111,6 +186,16 @@ kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
 
 def main():
+    """
+    The main function of the program.
+
+    This function captures video from the webcam, processes each frame, and performs actions based on the detected hand gestures.
+    The actions include moving the mouse cursor, clicking, scrolling, switching tabs, and refreshing the page.
+    The function also handles the exit of the program when the user confirms it through a message box.
+
+    Returns:
+    None
+    """
     global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, exit_thread
 
     cap = cv2.VideoCapture(0)
@@ -322,6 +407,5 @@ def main():
 
     cap.release()
     cv2.destroyAllWindows()
-
 
 main()
