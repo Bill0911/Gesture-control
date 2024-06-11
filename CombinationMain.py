@@ -44,6 +44,7 @@ scroll_cool_down = 1
 min_scroll_distance = 20
 mouse_control_active = False
 mouse_is_down = False
+IsGame = False
 
 
 def calculate_distance(point1, point2):
@@ -59,6 +60,25 @@ def detect_two_fingers_up(hand_landmarks):
 
     return index_tip.y < index_mcp.y and middle_tip.y < middle_mcp.y
 
+def detect_thumb_up(hand_landmarks):
+    # Check if thumb is up
+    thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
+    thumb_mcp = hand_landmarks.landmark[HandLandmark.THUMB_MCP]
+    index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
+    index_pip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_PIP]
+    pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+
+    return thumb_tip.y < thumb_mcp.y and thumb_tip.y < index_tip.y and thumb_tip.y < pinky_tip.y and thumb_tip.y < index_pip.y
+
+def detect_thumb_down(hand_landmarks):
+    # Check if thumb is down
+    thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
+    thumb_mcp = hand_landmarks.landmark[HandLandmark.THUMB_MCP]
+    index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
+    index_pip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_PIP]
+    pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+
+    return thumb_tip.y > thumb_mcp.y and thumb_tip.y > index_tip.y and thumb_tip.y > pinky_tip.y and thumb_tip.x > pinky_tip.x
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     # Calculate the distance between thumb tip and index finger MCP
@@ -170,6 +190,7 @@ while True:
                 pinky_pip = hand_landmarks.landmark[HandLandmark.PINKY_PIP]
                 pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
                 pinky_mcp = hand_landmarks.landmark[HandLandmark.PINKY_MCP]
+                wrist = hand_landmarks.landmark[HandLandmark.WRIST]
 
                 # Calculate distances
                 volumeup_distance = calculate_distance(thumb_tip, index_tip)
@@ -182,24 +203,37 @@ while True:
 
                 # Left hand gestures
                 if label == "Left":
-                    # Adjust volume for left hand
-                    if volumeup_distance < 0.05:
-                        pyautogui.press("volumeup")
-                    if volumedown_distance < 0.05:
-                        pyautogui.press("volumedown")
+                
+                    if IsGame == False:
+                        # Adjust volume for left hand
+                        if volumeup_distance < 0.05:
+                            pyautogui.press("volumeup")
+                        if volumedown_distance < 0.05:
+                            pyautogui.press("volumedown")
 
-                    # Adjust zoom for left hand
-                    if zoom_up_distance < 0.05:
-                        pyautogui.hotkey("ctrl", "+")
-                    if zoom_down_distance < 0.05:
-                        pyautogui.hotkey("ctrl", "-")
-
-                    # Arrow keys based on index tip position
-                    index_tip_x = int(index_tip.x * width)
-                    index_tip_y = int(index_tip.y * height)
-
+                        # Adjust zoom for left hand
+                        if zoom_up_distance < 0.05:
+                            pyautogui.hotkey("ctrl", "+")
+                        if zoom_down_distance < 0.05:
+                            pyautogui.hotkey("ctrl", "-")
+                    
+                    # Change mode
+                    if detect_thumb_up(hand_landmarks):
+                        IsGame = True
+                        print("thumb up")
+                    if detect_thumb_down(hand_landmarks):
+                        IsGame = False
+                        print("thumb down")
+                
+                if IsGame == True:
+                
                     #only if left index tip is close to middlefinger tip
                     if detect_two_fingers_up(hand_landmarks):
+
+                        # Arrow keys based on index tip position
+                        index_tip_x = int(index_tip.x * width)
+                        index_tip_y = int(index_tip.y * height)
+
                         if index_tip_x < width * 0.3:
                             pyautogui.keyDown("left")
                         if index_tip_x > width * 0.7:
@@ -209,10 +243,10 @@ while True:
                         if index_tip_y < height * 0.5:
                             pyautogui.keyDown("up")
 
-                # Initialize previous positions and times
-                prev_x, prev_y = 0, 0
-                prev_prev_x, prev_prev_y = 0, 0
-                prev_time, prev_prev_time = 0, 0
+                    # Initialize previous positions and times
+                    prev_x, prev_y = 0, 0
+                    prev_prev_x, prev_prev_y = 0, 0
+                    prev_time, prev_prev_time = 0, 0
 
                 # Right hand gestures
                 if label == "Right":
