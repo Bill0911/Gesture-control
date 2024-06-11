@@ -1,5 +1,4 @@
-import sys
-from time import time, sleep
+from time import time
 from math import hypot
 import cv2
 import mediapipe as mp
@@ -7,7 +6,6 @@ from mediapipe.python.solutions.hands import HandLandmark
 import numpy as np
 import pyautogui
 from tkinter import messagebox
-import tkinter as tk
 import tkinter.messagebox as messagebox
 import threading
 
@@ -37,7 +35,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 20 
+SCROLL_AMOUNT = 20
 SCROLL_ITERATIONS = 10
 
 prev_x, prev_y = 0.0, 0.0
@@ -47,8 +45,7 @@ min_scroll_distance = 20
 mouse_control_active = False
 mouse_is_down = False
 exit_program = False
-exit_thread_started = False
-messagebox_shown = False
+exit_thread = None
 
 
 def calculate_distance(point1, point2):
@@ -76,25 +73,15 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
+
 def confirm_exit():
     global exit_program
-    global messagebox_shown
-    if messagebox_shown: # if the message is already shown, do not pop up another time
-        return
-    messagebox_shown = True
-    root = tk.Tk()
-    root.withdraw() #Hide the root window 
-    #Move it to the central screen
-    window_width = root.winfo_reqwidth()
-    window_height = root.winfo_reqheight()
-    position_right = int(root.winfo_screenwidth()/2 - window_width/2)
-    position_down = int(root.winfo_screenheight()/2 - window_height/2)
-    root.geometry("+{}+{}".format(position_right, position_down))
-    result = messagebox.askyesno("Confirm Exit", "Do you actually want turn it off ?", parent=root)
+
+    result = messagebox.askyesno("Confirm Exit", "Do you actually want turn it off ?")
     if result:
         exit_program = True
-    messagebox_shown = False #Reset the flag after the notification is closed
-    root.destroy()
+
+    return
 
 
 class KalmanFilter:
@@ -122,18 +109,16 @@ class KalmanFilter:
 kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
-# Flag to stop the capture thread
-stop_thread = False
 
-
-def capture_and_process():
-    global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, stop_thread
+def main():
+    global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, exit_thread
 
     cap = cv2.VideoCapture(0)
 
-    while not stop_thread:
+    while cap.isOpened():
         if exit_program:
             break
+
         success, frame = cap.read()
 
         if not success:
@@ -296,10 +281,9 @@ def capture_and_process():
                                 and pinky_tip.y < pinky_mcp.y
                                 and abs(pinky_tip.y - index_tip.y) < 0.05
                             ):
-                            
+
                                 pyautogui.hotkey("ctrl", "tab")
                                 pyautogui.sleep(1)
-                                last_switch = time()
 
                             elif (
                                 index_pip.y > index_tip.y
@@ -326,26 +310,18 @@ def capture_and_process():
                                 last_scroll_time = current_time
 
                             if (
-                                turnoff_distance < 0.05 or 
-                                cv2.waitKey(1) & 0xFF == ord("q") and 
-                                not exit_thread_started
+                                turnoff_distance < 0.05
+                                or cv2.waitKey(1) & 0xFF == ord("q")
+                                and (exit_thread and exit_thread.is_alive())
                             ):
                                 exit_thread = threading.Thread(target=confirm_exit)
                                 exit_thread.start()
-                                exit_thread_started = True
+                                exit_thread.join()
 
         cv2.imshow("Image", frame)
-       
 
     cap.release()
     cv2.destroyAllWindows()
 
 
-# Create and start the capture thread
-capture_thread = threading.Thread(target=capture_and_process)
-capture_thread.start()
-
-# Main thread can handle other tasks or UI interactions here
-
-# Wait for the capture thread to finish before exiting the script
-capture_thread.join()
+main()
