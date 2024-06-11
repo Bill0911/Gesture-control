@@ -37,7 +37,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 20 
+SCROLL_AMOUNT = 30 
 SCROLL_ITERATIONS = 10
 
 prev_x, prev_y = 0.0, 0.0
