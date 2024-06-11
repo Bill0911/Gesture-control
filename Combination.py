@@ -45,35 +45,35 @@ min_scroll_distance = 20
 mouse_control_active = False
 mouse_is_down = False
 exit_program = False
-exit_thread = None
+is_exit_thread = False
 
 
 def calculate_distance(point1, point2):
     """
-        Calculate the Euclidean distance between two points.
+    Calculate the Euclidean distance between two points.
 
-        Args:
-        point1 (object): The first point.
-        point2 (object): The second point.
+    Args:
+    point1 (object): The first point.
+    point2 (object): The second point.
 
-        Returns:
-        float: The Euclidean distance between the two points.
+    Returns:
+    float: The Euclidean distance between the two points.
     """
     return hypot(point2.x - point1.x, point2.y - point1.y)
 
 
 def detect_two_fingers_up(hand_landmarks):
     """
-        Detects if the index and middle fingers are raised.
+    Detects if the index and middle fingers are raised.
 
-        This function checks if the y-coordinate of the tip of the index and middle fingers is less than the y-coordinate of the MCP joint of the same fingers.
-        If so, it means that the fingers are raised (assuming the hand is approximately vertical).
+    This function checks if the y-coordinate of the tip of the index and middle fingers is less than the y-coordinate of the MCP joint of the same fingers.
+    If so, it means that the fingers are raised (assuming the hand is approximately vertical).
 
-        Args:
-        hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
+    Args:
+    hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
 
-        Returns:
-        bool: True if the index and middle fingers are raised, False otherwise.
+    Returns:
+    bool: True if the index and middle fingers are raised, False otherwise.
     """
     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
     index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
@@ -85,19 +85,19 @@ def detect_two_fingers_up(hand_landmarks):
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     """
-        Detects if the thumb is near the MCP joint of the index finger.
+    Detects if the thumb is near the MCP joint of the index finger.
 
-        This function calculates the pixel coordinates of the thumb tip and the MCP joint of the index finger.
-        It then calculates the Euclidean distance between these two points.
+    This function calculates the pixel coordinates of the thumb tip and the MCP joint of the index finger.
+    It then calculates the Euclidean distance between these two points.
 
-        Args:
-        hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
-        height (int): The height of the frame.
-        width (int): The width of the frame.
+    Args:
+    hand_landmarks (object): The hand landmarks object obtained from MediaPipe Hands.
+    height (int): The height of the frame.
+    width (int): The width of the frame.
 
-        Returns:
-        tuple: A tuple containing the distance between the thumb tip and the MCP joint of the index finger,
-               the x and y coordinates of the MCP joint of the index finger, and the x and y coordinates of the thumb tip.
+    Returns:
+    tuple: A tuple containing the distance between the thumb tip and the MCP joint of the index finger,
+           the x and y coordinates of the MCP joint of the index finger, and the x and y coordinates of the thumb tip.
     """
     index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
@@ -110,21 +110,26 @@ def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     distance = np.sqrt((index_mcp_x - thumb_x) ** 2 + (index_mcp_y - thumb_y) ** 2)
     return distance, index_mcp_x, index_mcp_y, thumb_x, thumb_y
 
+
 def confirm_exit():
     """
-        Confirm the exit of the program.
+    Confirm the exit of the program.
 
-        This function prompts the user with a message box asking if they want to exit the program.
-        If the user confirms, it sets the global variable 'exit_program' to True, signaling the program to terminate.
+    This function prompts the user with a message box asking if they want to exit the program.
+    If the user confirms, it sets the global variable 'exit_program' to True, signaling the program to terminate.
 
-        Returns:
-        None
+    Returns:
+    None
     """
-    global exit_program
+    global exit_program, is_exit_thread
+
+    is_exit_thread = True
 
     result = messagebox.askyesno("Confirm Exit", "Do you actually want turn it off ?")
     if result:
         exit_program = True
+
+    is_exit_thread = False
 
     return
 
@@ -196,7 +201,7 @@ def main():
     Returns:
     None
     """
-    global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, exit_thread
+    global prev_x, prev_y, last_scroll_time, mouse_control_active, mouse_is_down, is_exit_thread
 
     cap = cv2.VideoCapture(0)
 
@@ -397,15 +402,16 @@ def main():
                             if (
                                 turnoff_distance < 0.05
                                 or cv2.waitKey(1) & 0xFF == ord("q")
-                                and (exit_thread and exit_thread.is_alive())
-                            ):
+                            ) and not is_exit_thread:
                                 exit_thread = threading.Thread(target=confirm_exit)
                                 exit_thread.start()
-                                exit_thread.join()
 
         cv2.imshow("Image", frame)
 
     cap.release()
     cv2.destroyAllWindows()
 
-main()
+
+main_thread = threading.Thread(target=main)
+main_thread.start()
+main_thread.join()
