@@ -6,8 +6,12 @@ from mediapipe.python.solutions.hands import HandLandmark
 import numpy as np
 import pyautogui
 from tkinter import messagebox
+import tkinter as tk
 import tkinter.messagebox as messagebox
 import threading
+from pykalman import KalmanFilter #You guys may need to install this packet
+
+
 
 pyautogui.FAILSAFE = False
 
@@ -35,7 +39,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 20
+SCROLL_AMOUNT = 30
 SCROLL_ITERATIONS = 10
 
 prev_x, prev_y = 0.0, 0.0
@@ -46,6 +50,14 @@ mouse_control_active = False
 mouse_is_down = False
 exit_program = False
 is_exit_thread = False
+
+initial_state = [0, 0]
+
+#define the initial state uncertainty
+initial_state_uncertainty = [[1, 0], [0, 1]]
+
+#Initialize the Kalman filter
+kf = KalmanFilter(initial_state_mean=initial_state, initial_state_covariance=initial_state_uncertainty)
 
 
 def calculate_distance(point1, point2):
@@ -189,6 +201,21 @@ class KalmanFilter:
 kf_x = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 kf_y = KalmanFilter(process_variance=1e-5, estimated_measurement_variance=0.3)
 
+class Smoother: #Here I added this to make the cursor way smoother
+    def __init__(self, window_size):
+        self.window_size = window_size
+        self.data = []
+
+    def add(self, value):
+        self.data.append(value)
+        if len(self.data) > self.window_size:
+            self.data.pop(0)
+
+    def get_average(self):
+        return sum(self.data) / len(self.data)
+
+# Initialize the smoother
+smoother = Smoother(5)  # Use the last 5 positions for smoothing
 
 def main():
     """
@@ -242,20 +269,19 @@ def main():
                 if frame.shape[1] and frame.shape[0]:
                     if index_mcp_x is not None and index_mcp_y is not None:
                         try:
-                            index_mcp_x_px = int(index_mcp_x * frame.shape[1])
-                            index_mcp_y_px = int(index_mcp_y * frame.shape[0])
-
-                            cv2.circle(
-                                frame,
-                                (index_mcp_x_px, index_mcp_y_px),
-                                10,
-                                (0, 255, 255),
-                                -1,
+                            #Update the Kalman Filter with the current measurement
+                            current_state_estimate, current_state_covariance = kf.filter_update(
+                                filtered_state_means[-1], filter_state_covariances[-1], [index_mcp_x, index_mcp_y]
                             )
-                        except cv2.error as e:
-                            print(f"OpenCV error: {e}")
-                    else:
-                        raise ValueError(f"Invalid center for circle")
+                            #Get the estimate from the Kalman filter
+                            (filtered_state_means, filtered_state_covariances) = kf.filter([index_mcp_x, index_mcp_y])
+
+                            #Add the estimate to the smoother
+                            smoother.add(current_state_estimate)
+
+                            #Get the smoothed estimate
+                        except:
+                            pass
 
                 draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
