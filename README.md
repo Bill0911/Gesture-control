@@ -7,7 +7,7 @@ Updated version of Gesture Control
 #Righthand
 * Scroll up-down: raise your index finger to scroll up, lower your index finger to scroll down.
 * Switch tab: raise both your index and pinky finger to switch tabs.
-* Page refresh: use your thumb and ring finger to refresh webpage.(fixing)
+* Page refresh: use your thumb and ring finger to refresh webpage.
 * Turn off webcam: use your thumb and pinky finger to turn off your webcam. 
 * Moving and clicking, dragging.
   ### Daily tip:
