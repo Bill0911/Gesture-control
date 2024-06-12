@@ -65,20 +65,20 @@ def detect_thumb_up(hand_landmarks):
     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
     thumb_mcp = hand_landmarks.landmark[HandLandmark.THUMB_MCP]
     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
-    index_pip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_PIP]
-    pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+    index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
+    wrist = hand_landmarks.landmark[HandLandmark.WRIST]
 
-    return thumb_tip.y < thumb_mcp.y and thumb_tip.y < index_tip.y and thumb_tip.y < pinky_tip.y and thumb_tip.y < index_pip.y
+    return thumb_tip.y < thumb_mcp.y and thumb_tip.y < index_mcp.y and thumb_tip.x < index_tip.x and thumb_tip.x > wrist.x
 
 def detect_thumb_down(hand_landmarks):
     # Check if thumb is down
     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
     thumb_mcp = hand_landmarks.landmark[HandLandmark.THUMB_MCP]
     index_tip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_TIP]
-    index_pip = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_PIP]
-    pinky_tip = hand_landmarks.landmark[HandLandmark.PINKY_TIP]
+    index_mcp = hand_landmarks.landmark[HandLandmark.INDEX_FINGER_MCP]
+    wrist = hand_landmarks.landmark[HandLandmark.WRIST]
 
-    return thumb_tip.y > thumb_mcp.y and thumb_tip.y > index_tip.y and thumb_tip.y > pinky_tip.y and thumb_tip.x > pinky_tip.x
+    return thumb_tip.y > thumb_mcp.y and thumb_tip.y > index_mcp.y and thumb_tip.x < index_tip.x and thumb_tip.x > wrist.x
 
 def detect_thumb_near_index_mcp(hand_landmarks, height, width):
     # Calculate the distance between thumb tip and index finger MCP
