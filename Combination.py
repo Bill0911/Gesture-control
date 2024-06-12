@@ -39,7 +39,7 @@ SMOTH_FACTOR = 0.8
 # Get screen size
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-SCROLL_AMOUNT = 30
+SCROLL_AMOUNT = 40
 SCROLL_ITERATIONS = 10
 
 prev_x, prev_y = 0.0, 0.0
@@ -263,15 +263,15 @@ def main():
                     mp_hands.HandLandmark.INDEX_FINGER_MCP
                 ]
 
-                index_mcp_x = index_mcp.x
-                index_mcp_y = index_mcp.y
+                index_mcp_x = kf_x
+                index_mcp_y = kf_y
 
                 if frame.shape[1] and frame.shape[0]:
                     if index_mcp_x is not None and index_mcp_y is not None:
                         try:
                             #Update the Kalman Filter with the current measurement
                             current_state_estimate, current_state_covariance = kf.filter_update(
-                                filtered_state_means[-1], filter_state_covariances[-1], [index_mcp_x, index_mcp_y]
+                                filtered_state_means[-1], filtered_state_covariances[-1], [index_mcp_x, index_mcp_y]
                             )
                             #Get the estimate from the Kalman filter
                             (filtered_state_means, filtered_state_covariances) = kf.filter([index_mcp_x, index_mcp_y])
@@ -394,7 +394,8 @@ def main():
                         if current_time - last_scroll_time > scroll_cool_down:
                             if (
                                 pinky_tip.y < pinky_pip.y
-                                and pinky_tip.y < pinky_mcp.y
+                                and pinky_tip.y < pinky_mcp.y 
+                                and ring_tip.y > pinky_tip.y
                                 and abs(pinky_tip.y - index_tip.y) < 0.05
                             ):
 
@@ -420,7 +421,7 @@ def main():
 
                             elif (
                                 page_refresh_distance < 0.05
-                                and not mouse_control_active
+                                and mouse_control_active
                             ):
                                 pyautogui.hotkey("ctrl", "r")
                                 last_scroll_time = current_time
