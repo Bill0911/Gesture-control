@@ -128,6 +128,11 @@ cap = cv2.VideoCapture(0)
 while True:
     success, frame = cap.read()
 
+    # Initialize previous positions and times
+    prev_x, prev_y = 0, 0
+    prev_prev_x, prev_prev_y = 0, 0
+    prev_time, prev_prev_time = 0, 0
+
     if not success:
         break
 
@@ -243,10 +248,7 @@ while True:
                         if index_tip_y < height * 0.5:
                             pyautogui.keyDown("up")
 
-                    # Initialize previous positions and times
-                    prev_x, prev_y = 0, 0
-                    prev_prev_x, prev_prev_y = 0, 0
-                    prev_time, prev_prev_time = 0, 0
+                
 
                 # Right hand gestures
                 if label == "Right":
