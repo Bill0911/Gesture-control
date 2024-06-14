@@ -16,6 +16,7 @@ mediapipe = "^0.10.14"
 tk = "^0.1.0"
 types-pyautogui = "^0.9.3.20240406"
 pydirectinput = "^1.0.4"
+pykalman = "^0.9.7"
 
 
 [build-system]
