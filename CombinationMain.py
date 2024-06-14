@@ -198,10 +198,10 @@ while True:
                 wrist = hand_landmarks.landmark[HandLandmark.WRIST]
 
                 # Calculate distances
-                volumeup_distance = calculate_distance(thumb_tip, index_tip)
-                volumedown_distance = calculate_distance(thumb_tip, middle_tip)
-                zoom_up_distance = calculate_distance(thumb_tip, ring_tip)
-                zoom_down_distance = calculate_distance(thumb_tip, pinky_tip)
+                index_to_thumb_distance = calculate_distance(thumb_tip, index_tip)
+                middle_to_thumb_distance = calculate_distance(thumb_tip, middle_tip)
+                ring_to_thumb = calculate_distance(thumb_tip, ring_tip)
+                pinky_to_thumb_distance = calculate_distance(thumb_tip, pinky_tip)
 
                 # turning off webcam
                 turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
@@ -211,15 +211,15 @@ while True:
                 
                     if IsGame == False:
                         # Adjust volume for left hand
-                        if volumeup_distance < 0.05:
+                        if index_to_thumb_distance < 0.05:
                             pyautogui.press("volumeup")
-                        if volumedown_distance < 0.05:
+                        if middle_to_thumb_distance < 0.05:
                             pyautogui.press("volumedown")
 
                         # Adjust zoom for left hand
-                        if zoom_up_distance < 0.05:
+                        if ring_to_thumb < 0.05:
                             pyautogui.hotkey("ctrl", "+")
-                        if zoom_down_distance < 0.05:
+                        if pinky_to_thumb_distance < 0.05:
                             pyautogui.hotkey("ctrl", "-")
                     
                     # Change mode
@@ -231,22 +231,15 @@ while True:
                         print("thumb down")
                 
                 if IsGame == True:
-                
-                    #only if left index tip is close to middlefinger tip
-                    if detect_two_fingers_up(hand_landmarks):
 
-                        # Arrow keys based on index tip position
-                        index_tip_x = int(index_tip.x * width)
-                        index_tip_y = int(index_tip.y * height)
-
-                        if index_tip_x < width * 0.3:
-                            pyautogui.keyDown("left")
-                        if index_tip_x > width * 0.7:
-                            pyautogui.keyDown("right")
-                        if index_tip_y > height * 0.7:
-                            pyautogui.keyDown("down")
-                        if index_tip_y < height * 0.5:
-                            pyautogui.keyDown("up")
+                    if index_to_thumb_distance < 0.05:
+                        pyautogui.keyDown("right")
+                    if middle_to_thumb_distance < 0.05:
+                        pyautogui.keyDown("up")
+                    if ring_to_thumb < 0.05:
+                        pyautogui.keyDown("left")
+                    if pinky_to_thumb_distance < 0.05:
+                        pyautogui.keyDown("down")
 
                 
 
