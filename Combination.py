@@ -307,7 +307,7 @@ def main():
 
                     # right hand
                     turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
-                    page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
+                    page_refresh_distance = calculate_distance(thumb_tip, middle_tip)
 
                     if label == "Left":
                         if volumeup_distance < 0.05:
@@ -428,6 +428,7 @@ def main():
 
                             if (
                                 turnoff_distance < 0.05
+                                and pinky_pip.y > ring_tip.y
                                 or cv2.waitKey(1) & 0xFF == ord("q")
                             ) and not is_exit_thread:
                                 exit_thread = threading.Thread(target=confirm_exit)
