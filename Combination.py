@@ -8,6 +8,7 @@ from math import hypot
 from time import time
 from tkinter import messagebox
 from pykalman import KalmanFilter
+from pynput.keyboard import Key, Controller
 from mediapipe.python.solutions.hands import HandLandmark
 
 # Constants and Initialization
@@ -24,10 +25,10 @@ hands = mp_hands.Hands(
 
 draw = mp.solutions.drawing_utils
 
-ROI_TOP = 0.2
-ROI_BOTTOM = 0.8
-ROI_LEFT = 0.2
-ROI_RIGHT = 0.8
+ROI_TOP = 0.1
+ROI_BOTTOM = 0.9
+ROI_LEFT = 0.1
+ROI_RIGHT = 0.9
 
 SMOTH_FACTOR = 0.8
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
@@ -122,6 +123,8 @@ def main():
 
         cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
 
+        cv2.imshow("Image", frameRGB)
+
         if process.multi_hand_landmarks:
             for hand_landmarks, handedness in zip(
                 process.multi_hand_landmarks, process.multi_handedness
@@ -132,11 +135,7 @@ def main():
                             hand_landmarks, handedness, frame, height, width
                         )
                     case "GAMING":
-                        handle_gaming_mode(
-                            hand_landmarks, handedness, frame, height, width
-                        )
-
-        cv2.imshow("Image", frame)
+                        handle_gaming_mode(hand_landmarks, handedness, frame)
 
     cap.release()
     cv2.destroyAllWindows()
@@ -153,7 +152,7 @@ def handle_main_mode(hand_landmarks, handedness, frame, height, width):
         handle_main_right_hand_gestures(hand_landmarks, height, width, frame)
 
 
-def handle_gaming_mode(hand_landmarks, handedness, frame, height, width):
+def handle_gaming_mode(hand_landmarks, handedness, frame):
     label = handedness.classification[0].label
     draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
 
@@ -161,7 +160,7 @@ def handle_gaming_mode(hand_landmarks, handedness, frame, height, width):
         handle_gaming_left_hand_gestures(hand_landmarks)
 
     if label == "Right":
-        handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame)
+        handle_gaming_right_hand_gestures(hand_landmarks)
 
 
 def handle_main_left_hand_gestures(hand_landmarks):
@@ -314,7 +313,7 @@ def activate_mouse_control(
 def handle_gaming_left_hand_gestures(hand_landmarks): ...
 
 
-def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
+def handle_gaming_right_hand_gestures(hand_landmarks):
     global mode
 
     thumb_tip = hand_landmarks.landmark[HandLandmark.THUMB_TIP]
@@ -330,11 +329,6 @@ def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
     locked_index_finger_distance = calculate_distance(index_tip, wrist)
     locked_middle_finger_distance = calculate_distance(middle_tip, wrist)
 
-    thumb_index_distance = calculate_distance(thumb_tip, index_tip)
-    thumb_pinky_distance = calculate_distance(thumb_tip, pinky_tip)
-    thumb_middle_distance = calculate_distance(thumb_tip, middle_tip)
-    thumb_ring_distance = calculate_distance(thumb_tip, ring_tip)
-
     average_tip = {
         "x": np.mean([thumb_tip.x, thumb_tip.x, ring_tip.x, pinky_tip.x]),
         "y": np.mean([thumb_tip.y, thumb_tip.y, ring_tip.y, pinky_tip.y]),
@@ -349,17 +343,35 @@ def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
         mode = "MAIN"
         print(mode)
 
-    if thumb_index_distance < 0.05:
-        pyautogui.press("left")
+    keyboard = Controller()
+
+    if (
+        -0.4 < average_tip["x"] - wrist.x < -0.2
+        and 0.2 < abs(average_tip["y"] - wrist.y) < 0.35
+    ):
+        keyboard.press(Key.left)
+        keyboard.release(Key.left)
         print("left")
-    elif thumb_pinky_distance < 0.05:
-        pyautogui.press("right")
+    elif (
+        0.2 < average_tip["x"] - wrist.x < 0.3
+        and 0.05 < abs(average_tip["y"] - wrist.y) < 0.25
+    ):
+        keyboard.press(Key.right)
+        keyboard.release(Key.right)
         print("right")
-    elif average_tip["y"] - wrist.y < -0.25 and ring_tip.y < middle_tip.y and thumb_middle_distance and abs(average_tip["x"] - wrist.x) < 0.3:
-        pyautogui.press("up")
+    elif (
+        -0.6 < average_tip["y"] - wrist.y < -0.3
+        and 0 < abs(average_tip["x"] - wrist.x) < 0.2
+    ):
+        keyboard.press(Key.up)
+        keyboard.release(Key.up)
         print("up")
-    elif thumb_ring_distance and pinky_tip.y < ring_tip.y and abs(average_tip["x"] - wrist.x) < 0.3:
-        pyautogui.press("down")
+    elif (
+        0.2 < average_tip["y"] - wrist.y < 0.4
+        and 0.1 < abs(average_tip["x"] - wrist.x) < 0.35
+    ):
+        keyboard.press(Key.down)
+        keyboard.release(Key.down)
         print("down")
 
 

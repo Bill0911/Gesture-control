@@ -13,17 +13,7 @@ Updated version of Gesture Control
 
 Gaming mode
 -----------
-- For now can use arrow keys to control a game:
-  * Left:
-    Use **index** to touch thumb
-  * Right:
-    Use **pinky** to touch thumb
-  * Up:
-    Use **middle** to touch thumb
-  * Down:
-    Use **ring** to touch thumb
-  ### Daily tip:
-One way to click comfortably as possible is try to click by catching your ring from your thumb, you don’t have to always keep your index and middle straight, instead you should let are your index and middle finger bent a bit as they are being relaxed.
-
+- For now you can use arrow keys to control a game, fully open your hand and point in direction which correspond to arrow key you want to press
+  
 
 
