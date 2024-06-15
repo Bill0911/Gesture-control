@@ -340,28 +340,6 @@ def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
         "y": np.mean([thumb_tip.y, thumb_tip.y, ring_tip.y, pinky_tip.y]),
     }
 
-    print(average_tip, wrist)
-
-    # left
-    # {'x': 0.4678768515586853, 'y': 0.8568297177553177}
-    # x: 0.837827206
-    # y: 1.01180232
-
-    # right
-    # {'x': 0.649585485458374, 'y': 0.8625108450651169}
-    # x: 0.480740041
-    # y: 1.00610268
-
-    # down
-    # {'x': 0.43690459430217743, 'y': 0.9198592007160187}
-    # x: 0.609110832
-    # y: 0.640805364
-
-    # up
-    # {'x': 0.6034519821405411, 'y': 0.32954302430152893}
-    # x: 0.739383876
-    # y: 0.632855177
-
     if (
         switch_mode_distance > 0.20
         and thumb_tip.y > thumb_cmc.y
