@@ -226,7 +226,7 @@ def handle_main_right_hand_gestures(hand_landmarks, height, width, frame):
 
     if not mouse_control_active:
         turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
-        page_refresh_distance = calculate_distance(thumb_tip, ring_tip)
+        page_refresh_distance = calculate_distance(thumb_tip, middle_tip)
 
         if current_time - last_scroll_time > scroll_cool_down:
             if (
@@ -330,6 +330,11 @@ def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
     locked_index_finger_distance = calculate_distance(index_tip, wrist)
     locked_middle_finger_distance = calculate_distance(middle_tip, wrist)
 
+    thumb_index_distance = calculate_distance(thumb_tip, index_tip)
+    thumb_pinky_distance = calculate_distance(thumb_tip, pinky_tip)
+    thumb_middle_distance = calculate_distance(thumb_tip, middle_tip)
+    thumb_ring_distance = calculate_distance(thumb_tip, ring_tip)
+
     average_tip = {
         "x": np.mean([thumb_tip.x, thumb_tip.x, ring_tip.x, pinky_tip.x]),
         "y": np.mean([thumb_tip.y, thumb_tip.y, ring_tip.y, pinky_tip.y]),
@@ -366,16 +371,16 @@ def handle_gaming_right_hand_gestures(hand_landmarks, height, width, frame):
         mode = "MAIN"
         print(mode)
 
-    if average_tip["x"] - wrist.x < -0.25 and abs(average_tip["y"] - wrist.y) < 0.3:
+    if thumb_index_distance < 0.05:
         pyautogui.press("left")
         print("left")
-    elif average_tip["x"] - wrist.x > 0.25 and abs(average_tip["y"] - wrist.y) < 0.3:
+    elif thumb_pinky_distance < 0.05:
         pyautogui.press("right")
         print("right")
-    elif average_tip["y"] - wrist.y < -0.25 and abs(average_tip["x"] - wrist.x) < 0.3:
+    elif average_tip["y"] - wrist.y < -0.25 and ring_tip.y < middle_tip.y and thumb_middle_distance and abs(average_tip["x"] - wrist.x) < 0.3:
         pyautogui.press("up")
         print("up")
-    elif average_tip["y"] - wrist.y > 0.25 and abs(average_tip["x"] - wrist.x) < 0.3:
+    elif thumb_ring_distance and pinky_tip.y < ring_tip.y and abs(average_tip["x"] - wrist.x) < 0.3:
         pyautogui.press("down")
         print("down")
 
