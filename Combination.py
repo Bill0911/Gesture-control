@@ -329,6 +329,9 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
     locked_index_finger_distance = calculate_distance(index_tip, wrist)
     locked_middle_finger_distance = calculate_distance(middle_tip, wrist)
 
+    thumb_index_distance = calculate_distance(thumb_tip, index_tip)
+    thumb_pinky_distance = calculate_distance(thumb_tip, pinky_tip)
+
     average_tip = {
         "x": np.mean([thumb_tip.x, thumb_tip.x, ring_tip.x, pinky_tip.x]),
         "y": np.mean([thumb_tip.y, thumb_tip.y, ring_tip.y, pinky_tip.y]),
@@ -346,15 +349,13 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
     keyboard = Controller()
 
     if (
-        -0.4 < average_tip["x"] - wrist.x < -0.2
-        and 0.2 < abs(average_tip["y"] - wrist.y) < 0.35
+        thumb_index_distance < 0.05
     ):
         keyboard.press(Key.left)
         keyboard.release(Key.left)
         print("left")
     elif (
-        0.2 < average_tip["x"] - wrist.x < 0.3
-        and 0.05 < abs(average_tip["y"] - wrist.y) < 0.25
+        thumb_pinky_distance < 0.05
     ):
         keyboard.press(Key.right)
         keyboard.release(Key.right)
