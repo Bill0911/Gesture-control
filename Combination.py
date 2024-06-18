@@ -4,7 +4,7 @@ import pyautogui
 import mediapipe as mp
 import numpy as np
 
-from math import hypot
+from math import hypot, sqrt
 from time import time
 from tkinter import messagebox
 from pykalman import KalmanFilter
@@ -348,32 +348,32 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
 
     keyboard = Controller()
 
-    if (
-        thumb_index_distance < 0.05
-    ):
-        keyboard.press(Key.left)
-        keyboard.release(Key.left)
-        print("left")
-    elif (
-        thumb_pinky_distance < 0.05
-    ):
-        keyboard.press(Key.right)
-        keyboard.release(Key.right)
-        print("right")
-    elif (
-        -0.6 < average_tip["y"] - wrist.y < -0.3
-        and 0 < abs(average_tip["x"] - wrist.x) < 0.2
-    ):
-        keyboard.press(Key.up)
-        keyboard.release(Key.up)
-        print("up")
-    elif (
-        0.2 < average_tip["y"] - wrist.y < 0.4
-        and 0.1 < abs(average_tip["x"] - wrist.x) < 0.35
-    ):
-        keyboard.press(Key.down)
-        keyboard.release(Key.down)
-        print("down")
+    dx = wrist.x - average_tip["x"]
+    dy = wrist.y - average_tip["y"]
+
+    x1, y1, x2, y2 = (0, 0, dx, dy)
+
+    distance = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+    if distance > 0.2:
+        if abs(x2 - x1) > abs(y2 - y1):
+            if x2 > x1:
+                keyboard.press(Key.left)
+                keyboard.release(Key.left)
+                print("left")
+            else:
+                keyboard.press(Key.right)
+                keyboard.release(Key.right)
+                print("right")
+        else:
+            if y2 > y1:
+                keyboard.press(Key.up)
+                keyboard.release(Key.up)
+                print("up")
+            else:
+                keyboard.press(Key.down)
+                keyboard.release(Key.down)
+                print("down")
 
 
 if __name__ == "__main__":
