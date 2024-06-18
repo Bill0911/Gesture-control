@@ -223,7 +223,7 @@ def handle_main_right_hand_gestures(hand_landmarks, height, width, frame):
         mode = "GAMING"
         print(mode)
 
-    if not mouse_control_active:
+    if mouse_control_active:
         turnoff_distance = calculate_distance(thumb_tip, pinky_tip)
         page_refresh_distance = calculate_distance(thumb_tip, middle_tip)
 
@@ -329,9 +329,6 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
     locked_index_finger_distance = calculate_distance(index_tip, wrist)
     locked_middle_finger_distance = calculate_distance(middle_tip, wrist)
 
-    thumb_index_distance = calculate_distance(thumb_tip, index_tip)
-    thumb_pinky_distance = calculate_distance(thumb_tip, pinky_tip)
-
     average_tip = {
         "x": np.mean([thumb_tip.x, thumb_tip.x, ring_tip.x, pinky_tip.x]),
         "y": np.mean([thumb_tip.y, thumb_tip.y, ring_tip.y, pinky_tip.y]),
@@ -340,8 +337,8 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
     if (
         switch_mode_distance > 0.20
         and thumb_tip.y > thumb_cmc.y
-        and locked_index_finger_distance < 0.20
-        and locked_middle_finger_distance < 0.20
+        and locked_index_finger_distance < 0.35
+        and locked_middle_finger_distance < 0.30
     ):
         mode = "MAIN"
         print(mode)
