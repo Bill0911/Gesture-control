@@ -348,7 +348,7 @@ def handle_gaming_right_hand_gestures(hand_landmarks):
     dx = wrist.x - average_tip["x"]
     dy = wrist.y - average_tip["y"]
 
-    x1, y1, x2, y2 = (0, 0, dx, dy)
+    x1, y1, x2, y2 = 0, 0, dx, dy
 
     distance = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
