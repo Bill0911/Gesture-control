@@ -1,4 +1,11 @@
+Gesture Control Computer Interface
+---
 Gesture Control we designed is a technology that allows users to control a certain device by using hand gestures detected by Webcam of a laptop or a computer. This README wraps up all festures have on this technology and it updates constantly so make use that the user can keep track and use the latest version of the software  
+
+The Final product can be found on the master branch thus it is the only branch you have to clone.
+Altough the product is not perfect it will likely not be updated.
+
+There are currently no known errors present; however, it is possible that some gestures may not be immediately read by the program due to lag, which you might encounter on lower to middle-end devices.
 
 Status: Updated
 ---
