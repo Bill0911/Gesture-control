@@ -12,6 +12,7 @@ Righthand
 * Scroll up-down: raise your index finger to scroll up, lower your index finger to scroll down.
 * Switch tab: raise both your index and pinky finger to switch tabs.
 * Refresh page: use your thumb and ring finger to refresh webpage.
+* Switch mode: Thumbs up to switch to the Gaming mode and thumbs down to switch the Main mode
 * Turn off the software: use your thumb and pinky finger to turn off your webcam. 
 
 Gaming mode
