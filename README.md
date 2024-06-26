@@ -1,5 +1,7 @@
 Gesture Control we designed is a technology that allows users to control a certain device by using hand gestures detected by Webcam of a laptop or a computer. This README wraps up all festures have on this technology and it updates constantly so make use that the user can keep track and use the latest version of the software  
-Updated version of Gesture Control
+
+Status: Updated
+---
 ## The following features are now available and tested successfully
 Lefthand
 ---
